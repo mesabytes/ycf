@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 pub mod neoconf {
     pub struct Neoconf {
         file_path: String,
@@ -20,11 +22,25 @@ pub mod neoconf {
             todo!();
         }
 
-        /// read config file and return file content
-        fn load_file(&self) -> String {
-            let mut content = String::new();
+        pub fn load(&self) {
+            let file_contents = self.get_file_contents();
 
-            return content;
+            self.parse(file_contents);
+        }
+
+        /// read config file and return file contents
+        fn get_file_contents(&self) -> String {
+            if std::path::Path::new(&self.file_path).exists() == false {
+                std::fs::write(&self.file_path, "").expect("Failed to write file");
+            }
+
+            let contents = std::fs::read_to_string(&self.file_path).expect("Failed to read file");
+
+            return contents;
+        }
+
+        fn parse(&self, file_contents: String) {
+            println!("contents: {}", file_contents);
         }
 
     }
