@@ -1,0 +1,4 @@
+testkey = testvalue
+
+[general]
+somekey = somevalue

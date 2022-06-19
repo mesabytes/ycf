@@ -1,0 +1,10 @@
+load config from file
+parser:
+    scan line by line 
+        if line empty of starts with ';' or '#' skip
+        if line starts with [ and ends with ] it's a section
+        if line includes '=' it's a setting, split with '='
+            trim white space in key and value
+            insert in parsed hashMap
+                key is '{section}.{key}'
+                value is value 
