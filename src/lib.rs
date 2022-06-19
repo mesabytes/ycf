@@ -1,17 +1,18 @@
-use std::collections::HashMap;
-
 pub mod neoconf {
+    use std::collections::HashMap;
+
     pub struct Neoconf {
         file_path: String,
+        hash_map: HashMap<String, String>,
     }
 
     impl Neoconf {
         pub fn new(file_path: String) -> Self {
-            Self { file_path }
+            Self { file_path, hash_map: HashMap::new() }
         }
 
-        pub fn get(&self) {
-            todo!();
+        pub fn get(&self, section: &str, key: &str) -> Option<&String> {
+            return self.hash_map.get(&format!("{section}.{key}"))
         }
 
         pub fn set(&self, section: &str, key: &str, value: &str) {
