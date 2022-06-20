@@ -1,5 +1,5 @@
 pub mod neoconf {
-    use std::collections::HashMap;
+    use std::{collections::HashMap, sync::Arc};
 
     const DEFAULT_SECTION: &str = "main";
 
@@ -29,7 +29,32 @@ pub mod neoconf {
         }
 
         pub fn remove(&self, section: &str, key: &str) {
-            todo!();
+            let mut file_contents = self.get_file_contents();
+            let file_contents_clone = &file_contents.clone();
+
+            let mut current_section = DEFAULT_SECTION;
+
+            for line in file_contents_clone.lines() {
+                if skip_comments_and_empty_lines(line) {
+                    continue;
+                }
+
+                if line.starts_with("[") && line.ends_with("]") {
+                    current_section = get_new_section(line);
+                }
+
+                if line.contains("=") {
+                    let (mut pair_key, _) = line.split_once("=").expect("Corrupt config file!");
+                    
+                    pair_key = pair_key.trim();
+                    
+                    if pair_key == key {
+                        file_contents = file_contents.replace(line, "");
+                    }
+                }
+            }
+
+            std::fs::write(&self.file_path, file_contents).expect("Failed to write file");
         }
 
         pub fn load(&mut self) {
@@ -48,24 +73,19 @@ pub mod neoconf {
 
             return contents;
         }
+        
+        
 
         fn parse(&mut self, file_contents: String) {
             let mut current_section = DEFAULT_SECTION;
 
             for line in file_contents.lines() {
-                if line.starts_with(";") || line.starts_with("#") || line.is_empty() {
+                if skip_comments_and_empty_lines(line) {
                     continue;
                 }
 
                 if line.starts_with("[") && line.ends_with("]") {
-                    // change current section
-                    let new_section = remove_first_and_last_chars(line);
-                    
-                    if new_section.is_empty() {
-                        current_section = DEFAULT_SECTION
-                    } else {
-                        current_section = new_section;
-                    }
+                    current_section = get_new_section(line);
                 }
 
                 if line.contains("=") {
@@ -87,6 +107,20 @@ pub mod neoconf {
         chars.next();
         chars.next_back();
         chars.as_str()
+    }
+
+    fn skip_comments_and_empty_lines(line: &str) -> bool {
+        line.starts_with(";") || line.starts_with("#") || line.is_empty()
+    }
+
+    fn get_new_section(line: &str) -> &str {
+        let new_section = remove_first_and_last_chars(line);
+        
+        if new_section.is_empty() {
+            return DEFAULT_SECTION
+        } 
+
+        return new_section
     }
 
 }
