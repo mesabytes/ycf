@@ -1,6 +1,8 @@
 pub mod neoconf {
     use std::collections::HashMap;
 
+    const DEFAULT_SECTION: &str = "main";
+
     pub struct Neoconf {
         file_path: String,
         hash_map: HashMap<String, String>,
@@ -41,10 +43,42 @@ pub mod neoconf {
         }
 
         fn parse(&self, file_contents: String) {
-            println!("contents: {}", file_contents);
+
+            let mut current_section = DEFAULT_SECTION;
+
+            for line in file_contents.lines() {
+                if line.starts_with(";") || line.starts_with("#") || line.is_empty() {
+                    continue;
+                }
+
+                if line.starts_with("[") && line.ends_with("]") {
+                    // change current section
+                    let new_section = remove_first_and_last_chars(line);
+                    
+                    if new_section.is_empty() {
+                        current_section = DEFAULT_SECTION
+                    } else {
+                        current_section = new_section;
+                    }
+                }
+
+                if line.contains("=") {
+                    // is setting
+                    // split and trim
+                }
+
+            }
         }
 
     }
+
+    fn remove_first_and_last_chars(value: &str) -> &str {
+        let mut chars = value.chars();
+        chars.next();
+        chars.next_back();
+        chars.as_str()
+    }
+
 }
 
 #[cfg(test)]
