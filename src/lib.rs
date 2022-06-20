@@ -14,12 +14,12 @@ pub mod neoconf {
         }
 
         pub fn get(&self, section: &mut str, key: &str) -> Option<&String> {
-        if section.is_empty() {
-            self.hash_map.get(&format!("{DEFAULT_SECTION}.{key}"))
-        } else {
+            if section.is_empty() {
+                return self.hash_map.get(&format!("{DEFAULT_SECTION}.{key}"))
+            } 
+            
             self.hash_map.get(&format!("{section}.{key}"))
         }
-    }
 
         pub fn set(&self, section: &str, key: &str, value: &str) {
             todo!();
