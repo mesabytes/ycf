@@ -11,4 +11,6 @@ fn main() {
         },
         None => {}
     }
+
+    // config.remove("general", "somekey")
 }
