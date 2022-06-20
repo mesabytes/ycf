@@ -13,7 +13,7 @@ pub mod neoconf {
             Self { file_path, hash_map: HashMap::new() }
         }
 
-        pub fn get(&self, section: &mut str, key: &str) -> Option<&String> {
+        pub fn get(&self, section: &str, key: &str) -> Option<&String> {
             if section.is_empty() {
                 return self.hash_map.get(&format!("{DEFAULT_SECTION}.{key}"))
             } 
@@ -29,7 +29,7 @@ pub mod neoconf {
             todo!();
         }
 
-        pub fn load(&self) {
+        pub fn load(&mut self) {
             let file_contents = self.get_file_contents();
 
             self.parse(file_contents);
@@ -46,8 +46,7 @@ pub mod neoconf {
             return contents;
         }
 
-        fn parse(&self, file_contents: String) {
-
+        fn parse(&mut self, file_contents: String) {
             let mut current_section = DEFAULT_SECTION;
 
             for line in file_contents.lines() {
@@ -67,8 +66,12 @@ pub mod neoconf {
                 }
 
                 if line.contains("=") {
-                    // is setting
-                    // split and trim
+                    let (mut key, mut value) = line.split_once("=").expect("Corrupt config file!");
+                    
+                    key = key.trim();
+                    value = value.trim();
+                    
+                    self.hash_map.insert(format!("{}.{}", current_section, key), value.to_owned());
                 }
 
             }
