@@ -48,7 +48,7 @@ pub mod neoconf {
                     
                     pair_key = pair_key.trim();
                     
-                    if pair_key == key {
+                    if current_section == section && pair_key == key {
                         file_contents = file_contents.replace(line, "");
                     }
                 }
