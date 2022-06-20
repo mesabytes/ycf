@@ -131,13 +131,4 @@ pub mod neoconf {
 }
 
 #[cfg(test)]
-mod tests {
-    use crate::neoconf;
-
-    #[test]
-    fn it_works() {
-        let config = neoconf::Neoconf::new(String::from("test.neoconf"));
-        
-        assert_eq!(2 + 2, 4);
-    }
-}
+mod test;
