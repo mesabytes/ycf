@@ -1,5 +1,5 @@
 pub mod neoconf {
-    use std::{collections::HashMap, sync::Arc};
+    use std::collections::HashMap;
 
     const DEFAULT_SECTION: &str = "main";
 
