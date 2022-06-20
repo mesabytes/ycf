@@ -49,7 +49,6 @@ pub mod neoconf {
                     pair_key = pair_key.trim();
                     
                     if current_section == section && pair_key == key {
-                        // file_contents = file_contents.replace(line, "");
                         let mut new_contents: Vec<&str> = file_contents.split("\n").collect();
 
                         new_contents.remove(index);
