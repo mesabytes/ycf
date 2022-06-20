@@ -34,7 +34,7 @@ pub mod neoconf {
 
             let mut current_section = DEFAULT_SECTION;
 
-            for line in file_contents_clone.lines() {
+            for (index, line) in file_contents_clone.lines().enumerate() {
                 if skip_comments_and_empty_lines(line) {
                     continue;
                 }
@@ -49,7 +49,13 @@ pub mod neoconf {
                     pair_key = pair_key.trim();
                     
                     if current_section == section && pair_key == key {
-                        file_contents = file_contents.replace(line, "");
+                        // file_contents = file_contents.replace(line, "");
+                        let mut new_contents: Vec<&str> = file_contents.split("\n").collect();
+
+                        new_contents.remove(index);
+
+                        file_contents = new_contents.join("\n");
+
                     }
                 }
             }
