@@ -5,7 +5,7 @@ fn main() {
 
     config.load();
 
-    match config.get("", "testkey") {
+    match config.get(None, "testkey") {
         Some(value) => {
             println!("testkey: {}", value);
         },

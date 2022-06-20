@@ -13,12 +13,15 @@ pub mod neoconf {
             Self { file_path, hash_map: HashMap::new() }
         }
 
-        pub fn get(&self, section: &str, key: &str) -> Option<&String> {
-            if section.is_empty() {
-                return self.hash_map.get(&format!("{DEFAULT_SECTION}.{key}"))
-            } 
-            
-            self.hash_map.get(&format!("{section}.{key}"))
+        pub fn get(&self, section: Option<&str>, key: &str) -> Option<&String> {
+            match section {
+                Some(value) => {
+                    return self.hash_map.get(&format!("{value}.{key}"))
+                },
+                None => {
+                    return self.hash_map.get(&format!("{DEFAULT_SECTION}.{key}"))
+                }
+            }
         }
 
         pub fn set(&self, section: &str, key: &str, value: &str) {
