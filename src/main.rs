@@ -5,12 +5,33 @@ fn main() {
 
     config.load();
 
-    match config.get(None, "testkey") {
+    match config.get(Some("testsection"), "testkey") {
         Some(value) => {
             println!("testkey: {}", value);
         },
         None => {}
     }
 
-    // config.remove("general", "somekey")
+    match config.get(Some("main"), "host") {
+        Some(value) => {
+            println!("host: {}", value);
+        },
+        None => {}
+    }
+
+    match config.get(Some("main"), "port") {
+        Some(value) => {
+            println!("port: {}", value);
+        },
+        None => {}
+    }
+
+    match config.get(None, "name") {
+        Some(value) => {
+            println!("name: {}", value);
+        },
+        None => {}
+    }
+
+    // config.remove("main", "host")
 }
