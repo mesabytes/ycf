@@ -3,6 +3,12 @@
     "name": "neoconf config language",
     "patterns": [
         {
+            "include": "#comments"
+        },
+        {
+            "include": "#keys"
+        },
+        {
             "include": "#keywords"
         },
         {
@@ -10,11 +16,39 @@
         }
     ],
     "repository": {
+        "comments": {
+            "match": ";.*",
+            "name": "comment.line.neoconf"
+        },
+        "keys": {
+            "patterns": [
+                {
+                    "comment": "Assignments without key are invalid!",
+                    "match": "(\\s*=.*)$",
+                    "name": "invalid.illegal"
+                },
+                {
+                    "comment": "Assignments without value are unusual",
+                    "match": "(\\s*[A-Za-z_\\-][A-Za-z0-9_\\-]*\\s*=)(?=\\s*$)",
+                    "name": "invalid.illegal"
+                },
+                {
+                    "begin": "\\s*([A-Za-z_-][A-Za-z0-9_-]*|\".+\"|''.+''|[0-9]+)\\s*(=)\\s*",
+                    "beginCaptures": {
+                        "1": { "name": "keyword.key.neoconf" },
+                        "2": {
+                            "name": "punctuation.definition.keyValuePair.neoconf"
+                        }
+                    },
+                    "end": "($|(?==)|\\,|\\s*(?=\\}))"
+                }
+            ]
+        },
         "keywords": {
             "patterns": [
                 {
                     "name": "keyword.control.neoconf",
-                    "match": "\\b(if|while|for|return)\\b"
+                    "match": "\\b(section)\\b"
                 }
             ]
         },
