@@ -30,9 +30,7 @@ pub mod neoconf {
 
         pub fn remove(&mut self, section: Option<&str>, key: &str) {
             let section = match section {
-                Some(section_) => 
-                    section_
-                ,
+                Some(value) => value,
                 None => {
                     DEFAULT_SECTION
                 }
