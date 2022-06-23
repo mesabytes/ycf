@@ -28,7 +28,7 @@ pub mod neoconf {
             todo!();
         }
 
-        pub fn remove(&self, section: &str, key: &str) {
+        pub fn remove(&mut self, section: &str, key: &str) {
             let mut file_contents = self.get_file_contents();
             let file_contents_clone = &file_contents.clone();
 
@@ -67,6 +67,7 @@ pub mod neoconf {
                 }
             }
 
+            self.hash_map.remove(&format!("{}.{}", section, key));
             std::fs::write(&self.file_path, file_contents).expect("Failed to write file");
         }
 
