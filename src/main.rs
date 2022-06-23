@@ -5,33 +5,13 @@ fn main() {
 
     config.load();
 
-    match config.get(Some("testsection"), "testkey") {
-        Some(value) => {
-            println!("testkey: {}", value);
-        },
-        None => {}
-    }
+    println!("testkey: {}", config.get(Some("testsection"), "testkey").unwrap_or(&String::from("None")));
 
-    match config.get(Some("main"), "host") {
-        Some(value) => {
-            println!("host: {}", value);
-        },
-        None => {}
-    }
+    println!("host: {}", config.get(Some("main"), "host").unwrap_or(&String::from("None")));
 
-    match config.get(Some("main"), "port") {
-        Some(value) => {
-            println!("port: {}", value);
-        },
-        None => {}
-    }
+    println!("port: {}", config.get(Some("main"), "port").unwrap_or(&String::from("None")));
 
-    match config.get(None, "name") {
-        Some(value) => {
-            println!("name: {}", value);
-        },
-        None => {}
-    }
+    println!("name: {}", config.get(None, "name").unwrap_or(&String::from("None")));
 
     // config.remove(None, "host");
 }
