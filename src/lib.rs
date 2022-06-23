@@ -33,14 +33,22 @@ pub mod neoconf {
             let file_contents_clone = &file_contents.clone();
 
             let mut current_section = DEFAULT_SECTION;
+            let mut inside_section = false;
 
             for (index, line) in file_contents_clone.lines().enumerate() {
                 if skip_comments_and_empty_lines(line) {
                     continue;
                 }
 
-                if line.starts_with("[") && line.ends_with("]") {
+                if line.starts_with("section") && line.ends_with("{") {
                     current_section = get_new_section(line);
+
+                    inside_section = true;
+                }
+
+                if inside_section == true && line.starts_with("}") {
+                    inside_section = false;
+                    current_section = DEFAULT_SECTION;
                 }
 
                 if line.contains("=") {
@@ -83,14 +91,24 @@ pub mod neoconf {
 
         fn parse(&mut self, file_contents: String) {
             let mut current_section = DEFAULT_SECTION;
+            let mut inside_section = false;
 
             for line in file_contents.lines() {
                 if skip_comments_and_empty_lines(line) {
                     continue;
                 }
 
-                if line.starts_with("[") && line.ends_with("]") {
+                // section NAME {
+                // }
+                if line.starts_with("section") && line.ends_with("{") {
                     current_section = get_new_section(line);
+
+                    inside_section = true;
+                }
+
+                if inside_section == true && line.starts_with("}") {
+                    inside_section = false;
+                    current_section = DEFAULT_SECTION;
                 }
 
                 if line.contains("=") {
@@ -107,19 +125,24 @@ pub mod neoconf {
 
     }
 
-    fn remove_first_and_last_chars(value: &str) -> &str {
-        let mut chars = value.chars();
-        chars.next();
-        chars.next_back();
-        chars.as_str()
-    }
+    // fn remove_first_and_last_chars(value: &str) -> &str {
+    //     let mut chars = value.chars();
+    //     chars.next();
+    //     chars.next_back();
+    //     chars.as_str()
+    // }
 
     fn skip_comments_and_empty_lines(line: &str) -> bool {
         line.starts_with(";") || line.starts_with("#") || line.is_empty()
     }
 
     fn get_new_section(line: &str) -> &str {
-        let new_section = remove_first_and_last_chars(line);
+        let new_line: Vec<&str> = line.split(" ").collect();
+
+        // index 0: "section" 
+        // index 1: section name
+        // index 2: {
+        let new_section = new_line[1];
         
         if new_section.is_empty() {
             return DEFAULT_SECTION
