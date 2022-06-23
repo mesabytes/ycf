@@ -1,2 +1,4 @@
+maybe split key and value by ' ' instead of '='?
+
 [ ] create vscode extension for neoconf syntax highlighting 
 [ ] remove section if empty
