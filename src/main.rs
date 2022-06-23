@@ -33,5 +33,5 @@ fn main() {
         None => {}
     }
 
-    // config.remove("main", "host")
+    // config.remove(None, "host");
 }

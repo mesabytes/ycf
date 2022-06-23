@@ -15,8 +15,8 @@ pub mod neoconf {
 
         pub fn get(&self, section: Option<&str>, key: &str) -> Option<&String> {
             match section {
-                Some(value) => {
-                    return self.hash_map.get(&format!("{value}.{key}"))
+                Some(section_) => {
+                    return self.hash_map.get(&format!("{section_}.{key}"))
                 },
                 None => {
                     return self.hash_map.get(&format!("{DEFAULT_SECTION}.{key}"))
@@ -28,7 +28,17 @@ pub mod neoconf {
             todo!();
         }
 
-        pub fn remove(&mut self, section: &str, key: &str) {
+        pub fn remove(&mut self, section: Option<&str>, key: &str) {
+            let section = match section {
+                Some(section_) => 
+                    section_
+                ,
+                None => {
+                    DEFAULT_SECTION
+                }
+            };
+
+
             let mut file_contents = self.get_file_contents();
             let file_contents_clone = &file_contents.clone();
 
