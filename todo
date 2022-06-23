@@ -1,0 +1,16 @@
+change grammar
+
+section name-of-section
+
+    example_key = example_value
+
+example_key = example_value
+
+end
+
+or 
+
+section name-of-section {
+    config here
+}
+
