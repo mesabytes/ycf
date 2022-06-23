@@ -3,6 +3,9 @@ section testsection {
 }
 
 section main {
+    ; comments test
+    ; test
+
     host = localhost
     port = 4433
 }
