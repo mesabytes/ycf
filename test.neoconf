@@ -1,4 +1,10 @@
-testkey = testvalue
+section testsection {
+    testkey = testvalue
+}
 
-[general]
-somekey = somevalue
+section main {
+    host = localhost
+    port = 4433
+}
+
+name = senpai
