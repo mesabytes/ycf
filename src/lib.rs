@@ -142,7 +142,7 @@ pub mod neoconf {
     // }
 
     fn skip_comments_and_empty_lines(line: &str) -> bool {
-        line.starts_with(";") || line.starts_with("#") || line.is_empty()
+        line.starts_with(";") || line.is_empty()
     }
 
     fn get_new_section(line: &str) -> &str {
