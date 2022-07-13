@@ -1,11 +1,11 @@
-section testsection {
+section testsection1 {
     testkey = testvalue
 }
 
-section main {
+section testsection2 {
     ; comments test
     ; test
-
+    
     host = localhost
     port = 4433
 }

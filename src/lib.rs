@@ -1,8 +1,7 @@
 mod parser;
-use parser::{Parser, StorageType};
+use parser::{Parser, StorageType, DEFAULT_SECTION};
 use std::collections::HashMap;
 
-const DEFAULT_SECTION: &str = "main";
 
 pub struct Neoconf {
     file_path: String,
@@ -88,7 +87,7 @@ impl Neoconf {
 
     pub fn load(&mut self) {
         let file_contents = self.get_file_contents();
-        let parser = Parser::new(file_contents);
+        let mut parser = Parser::new(self.file_path.to_string(), file_contents);
 
         self.storage = parser.parse();
         // self.parse(file_contents);
@@ -147,25 +146,6 @@ impl Neoconf {
 //     chars.next_back();
 //     chars.as_str()
 // }
-
-fn skip_comments_and_empty_lines(line: &str) -> bool {
-    line.starts_with(";") || line.is_empty()
-}
-
-fn get_new_section(line: &str) -> &str {
-    let new_line: Vec<&str> = line.split(" ").collect();
-
-    // index 0: "section" 
-    // index 1: section name
-    // index 2: {
-    let new_section = new_line[1];
-    
-    if new_section.is_empty() {
-        return DEFAULT_SECTION
-    } 
-
-    return new_section
-}
 
 #[cfg(test)]
 mod test;
