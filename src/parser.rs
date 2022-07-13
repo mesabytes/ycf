@@ -26,7 +26,10 @@ impl Parser {
         // temp storage for parsed data
         let storage: StorageType = HashMap::new();
 
-        
+        for line in self.file_contents.lines() {
+            let line = line.trim();
+            
+        }
 
         storage
     }
