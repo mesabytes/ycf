@@ -14,15 +14,21 @@ impl Neoconf {
         Self { file_path, storage: HashMap::new() }
     }
 
-    pub fn get(&self, section: Option<&str>, key: &str) -> Option<&String> {
+    fn get_section_name(&self, section: Option<&str>) -> String {
         match section {
-            Some(section_) => {
-                return self.storage.get(&format!("{section_}.{key}"))
+            Some(x) => {
+                return x.to_string()
             },
             None => {
-                return self.storage.get(&format!("{DEFAULT_SECTION}.{key}"))
+                return DEFAULT_SECTION.to_string()
             }
         }
+    }
+
+    pub fn get(&self, section: Option<&str>, key: &str) -> Option<&String> {
+        let section_name = self.get_section_name(section);
+
+        return self.storage.get(&format!("{section_name}.{key}"))
     }
 
     pub fn set(&self, section: &str, key: &str, value: &str) {
