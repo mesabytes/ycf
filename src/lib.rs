@@ -90,7 +90,7 @@ impl Neoconf {
         let file_contents = self.get_file_contents();
         let parser = Parser::new(file_contents);
 
-        parser.parse();
+        self.storage = parser.parse();
         // self.parse(file_contents);
     }
 
