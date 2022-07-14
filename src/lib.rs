@@ -18,7 +18,6 @@ impl Neoconf {
         let mut parser = Parser::new(self.file_path.to_string(), file_contents);
 
         self.storage = parser.parse();
-        // self.parse(file_contents);
     }
 
     pub fn save(&self) {
