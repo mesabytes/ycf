@@ -30,59 +30,20 @@ impl Neoconf {
         return self.storage.get(&format!("{section_name}.{key}"))
     }
 
-    pub fn set(&self, section: &str, key: &str, value: &str) {
-        todo!();
+    pub fn set(&mut self, section: Option<&str>, key: &str, value: &str) {
+        let section_name = self.get_section_name(section);
+
+        let key = format!("{section_name}.{key}");
+
+        self.storage.insert(key, value.to_string());
     }
 
     pub fn remove(&mut self, section: Option<&str>, key: &str) {
-        // let section = match section {
-        //     Some(value) => value,
-        //     None => {
-        //         DEFAULT_SECTION
-        //     }
-        // };
+        let section_name = self.get_section_name(section);
 
+        let key = format!("{section_name}.{key}");
 
-        // let mut file_contents = self.get_file_contents();
-        // let file_contents_clone = &file_contents.clone();
-
-        // let mut current_section = DEFAULT_SECTION;
-        // let mut inside_section = false;
-
-        // for (index, line) in file_contents_clone.lines().enumerate() {
-        //     if skip_comments_and_empty_lines(line) {
-        //         continue;
-        //     }
-
-        //     if line.starts_with("section") && line.ends_with("{") {
-        //         current_section = get_new_section(line);
-
-        //         inside_section = true;
-        //     }
-
-        //     if inside_section == true && line.starts_with("}") {
-        //         inside_section = false;
-        //         current_section = DEFAULT_SECTION;
-        //     }
-
-        //     if line.contains("=") {
-        //         let (mut pair_key, _) = line.split_once("=").expect("Corrupt config file!");
-                
-        //         pair_key = pair_key.trim();
-                
-        //         if current_section == section && pair_key == key {
-        //             let mut new_contents: Vec<&str> = file_contents.split("\n").collect();
-
-        //             new_contents.remove(index);
-
-        //             file_contents = new_contents.join("\n");
-
-        //         }
-        //     }
-        // }
-
-        // self.storage.remove(&format!("{}.{}", section, key));
-        // std::fs::write(&self.file_path, file_contents).expect("Failed to write file");
+        self.storage.remove(&key);
     }
 
     pub fn load(&mut self) {
