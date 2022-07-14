@@ -70,10 +70,6 @@ impl Parser {
                 storage.insert(format!("{}.{}", self.current_section, key), value.to_owned());
             }
         }
-
-        for key in storage.keys() {
-            println!("{key}");
-        }
         
         storage
     }
