@@ -21,7 +21,7 @@ impl Neoconf {
     }
 
     pub fn save(&self) {
-        
+
     }
 
     pub fn get(&self, section: Option<&str>, key: &str) -> Option<&String> {
