@@ -1,10 +1,7 @@
-maybe split key and value by ' ' instead of '='?
-maybe? change in syntax:
-    remove '=' and just wrap the value with '(' value here! ')'
-    + check if ')' is not at the end of the line that means this is a mulit line value 
-    i.e (this is a string
-    newline
-    hi how a are you?)
+[ ] better storing 
+change sotrage from HashMap<key, value>
+
+to HashMap<section_name, HashMap<key, value>>
 
 [ ] create vscode extension for neoconf syntax highlighting 
 [ ] remove section if empty

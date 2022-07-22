@@ -1,7 +1,12 @@
 use std::{collections::HashMap, process::exit};
 
+pub struct SectionItem {
+    pub key: String,
+    pub value: String
+}
+
 // type for parsed data in hashmap
-pub type StorageType = HashMap<String, String>;
+pub type StorageType = HashMap<String, Vec<SectionItem>>;
 pub const DEFAULT_SECTION: &str = "main";
 const COMMENT_CHAR: &str = ";";
 const DELIMITER: &str = "=";
@@ -67,7 +72,19 @@ impl Parser {
                     exit(1);
                 }
 
-                storage.insert(format!("{}.{}", self.current_section, key), value.to_owned());
+                let item = SectionItem {
+                    key: key.to_string(),
+                    value: value.to_string()
+                };
+
+                match storage.get_mut(&self.current_section) {
+                    Some(section_items) => {
+                        section_items.push(item)
+                    }
+                    None => {
+                        storage.insert(self.current_section.to_owned(), vec![item]);
+                    }
+                }
             }
         }
         

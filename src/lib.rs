@@ -1,5 +1,5 @@
 mod parser;
-use parser::{Parser, StorageType, DEFAULT_SECTION};
+use parser::{Parser, StorageType, DEFAULT_SECTION, SectionItem};
 use std::collections::HashMap;
 
 
@@ -20,30 +20,61 @@ impl Neoconf {
         self.storage = parser.parse();
     }
 
-    pub fn save(&self) {
+    pub fn save(&self) {}
 
-    }
-
-    pub fn get(&self, section: Option<&str>, key: &str) -> Option<&String> {
+    pub fn get(&self, section: Option<&str>, key: &str) -> Option<String> {
         let section_name = get_section_name(section);
 
-        return self.storage.get(&format!("{section_name}.{key}"))
+        match self.storage.get(&section_name) {
+            Some(section_items) => {
+                for item in section_items.iter() {
+                    if item.key == key {
+                        return Some(item.value.to_owned())
+                    }
+                }
+
+                Some(String::new())
+            },
+            None => None,
+        }
     }
 
     pub fn set(&mut self, section: Option<&str>, key: &str, value: &str) {
         let section_name = get_section_name(section);
 
-        let key = format!("{section_name}.{key}");
+        let item = SectionItem {
+            key: key.to_string(),
+            value: value.to_string()
+        };
 
-        self.storage.insert(key, value.to_string());
+        match self.storage.get_mut(&section_name) {
+            Some(section_items) => {
+                section_items.push(item)
+            }
+            None => {
+                self.storage.insert(section_name.to_owned(), vec![item]);
+            }
+        }
     }
 
-    pub fn remove(&mut self, section: Option<&str>, key: &str) {
+    pub fn remove(&mut self, section: Option<&str>, key: &str) -> bool {
         let section_name = get_section_name(section);
 
-        let key = format!("{section_name}.{key}");
+        // self.storage.remove(&key);
 
-        self.storage.remove(&key);
+        match self.storage.get_mut(&section_name) {
+            Some(section_items) => {
+                for (index, item) in section_items.iter().enumerate() {
+                    if item.key == key {
+                        section_items.remove(index);
+                        return true;
+                    }
+                }
+
+                return false;
+            },
+            None => false,
+        }
     }
 
     /// read config file and return file contents
