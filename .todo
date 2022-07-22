@@ -1,8 +1,3 @@
-[ ] better storing 
-change sotrage from HashMap<key, value>
-
-to HashMap<section_name, HashMap<key, value>>
-
 [ ] create vscode extension for neoconf syntax highlighting 
 [ ] remove section if empty
 
