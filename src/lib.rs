@@ -2,15 +2,27 @@ mod parser;
 use parser::{Parser, StorageType, DEFAULT_SECTION, SectionItem};
 use std::collections::HashMap;
 
+pub struct Options {
+    pub auto_save: bool
+}
+
+impl Default for Options {
+    fn default() -> Self {
+        Self { auto_save: false }
+    }
+}
+
 pub struct Neoconf {
     file_path: String,
+    options: Options,
     storage: StorageType,
 }
 
 impl Neoconf {
-    pub fn new(file_path: &str) -> Self {
+    pub fn new(file_path: &str, options: Options) -> Self {
         Self { 
             file_path: file_path.to_string(),
+            options: options,
             storage: HashMap::new() 
         }
     }
@@ -39,7 +51,7 @@ impl Neoconf {
         }
     }
 
-    pub fn set(&mut self, section: Option<&str>, key: &str, value: &str) {
+    pub fn set(&mut self, section: Option<&str>, key: &str, value: &str) -> std::io::Result<()> {
         let section_name = get_section_name(section);
 
         let item = SectionItem {
@@ -59,26 +71,34 @@ impl Neoconf {
                 self.storage.insert(section_name.to_owned(), vec![item]);
             }
         }
+
+        if self.options.auto_save {
+            self.save()?;
+        }
+
+        Ok(())
     }
 
-    pub fn remove(&mut self, section: Option<&str>, key: &str) -> bool {
+    pub fn remove(&mut self, section: Option<&str>, key: &str) -> std::io::Result<()> {
         let section_name = get_section_name(section);
-
-        // self.storage.remove(&key);
 
         match self.storage.get_mut(&section_name) {
             Some(section_items) => {
-                for (index, item) in section_items.iter().enumerate() {
-                    if item.key == key {
+                match section_items.iter().position(|item| *item.key == key.to_string()) {
+                    Some(index) => {
                         section_items.remove(index);
-                        return true;
-                    }
+                    },
+                    None => {}
                 }
-
-                return false;
             },
-            None => false,
+            None => {},
+        };
+
+        if self.options.auto_save {
+            self.save()?;
         }
+
+        Ok(())
     }
 
     /// read config file and return file contents
