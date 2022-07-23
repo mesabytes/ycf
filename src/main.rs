@@ -15,5 +15,5 @@ fn main() {
 
     println!("name: {}", config.get(None, "name").unwrap_or_default()); 
 
-    config.save()
+    config.save().unwrap();
 }

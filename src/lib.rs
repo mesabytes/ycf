@@ -20,8 +20,6 @@ impl Neoconf {
         self.storage = parser.parse();
     }
 
-    pub fn save(&self) {}
-
     pub fn get(&self, section: Option<&str>, key: &str) -> Option<String> {
         let section_name = get_section_name(section);
 
@@ -49,7 +47,9 @@ impl Neoconf {
 
         match self.storage.get_mut(&section_name) {
             Some(section_items) => {
-                section_items.push(item)
+                if !section_items.contains(&item) {
+                    section_items.push(item)
+                }
             }
             None => {
                 self.storage.insert(section_name.to_owned(), vec![item]);
@@ -86,6 +86,44 @@ impl Neoconf {
         let contents = std::fs::read_to_string(&self.file_path).expect("Failed to read file");
 
         return contents;
+    }
+
+    pub fn save(&self) -> std::io::Result<()> {
+        println!("save: {:?}", self.storage.keys());
+
+        let mut contents = String::new();
+
+        // write DEFAULT_SECTION before any other section
+        match self.storage.get(DEFAULT_SECTION) {
+            Some(items) => {
+                for item in items.iter() {
+                    contents.push_str(&format!("{} = {}\n", item.key, item.value));
+                }
+            },
+            None => {}
+        }
+
+        for section in self.storage.keys() {
+            if section == DEFAULT_SECTION {
+                continue;
+            }
+
+            contents.push_str(&format!("\nsection {} {{\n", section));
+
+            match self.storage.get(section) {
+                Some(items) => {
+                    for item in items.iter() {
+                        contents.push_str(&format!("\t{} = {}\n", item.key, item.value));
+                    }
+                },
+                None => {}
+            }
+            
+            contents.push_str(&format!("}}\n"));
+        }
+
+        std::fs::write(&self.file_path, contents)?;
+        Ok(())
     }
 }
 

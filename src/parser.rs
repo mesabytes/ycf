@@ -1,5 +1,6 @@
 use std::{collections::HashMap, process::exit};
 
+#[derive(PartialEq)]
 pub struct SectionItem {
     pub key: String,
     pub value: String
