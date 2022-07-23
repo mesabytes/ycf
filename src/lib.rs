@@ -8,8 +8,11 @@ pub struct Neoconf {
 }
 
 impl Neoconf {
-    pub fn new(file_path: String) -> Self {
-        Self { file_path, storage: HashMap::new() }
+    pub fn new(file_path: &str) -> Self {
+        Self { 
+            file_path: file_path.to_string(),
+            storage: HashMap::new() 
+        }
     }
 
     pub fn load(&mut self) {
