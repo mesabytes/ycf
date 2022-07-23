@@ -1,13 +1,10 @@
+name = senpai
+
 section testsection1 {
-    testkey = testvalue
+	testkey = testvalue
 }
 
 section testsection2 {
-    ; comments test
-    ; test
-    
-    host = localhost
-    port = 4433
+	host = localhost
+	port = 4433
 }
-
-name = senpai
