@@ -46,6 +46,8 @@ impl Neoconf {
 
         match self.storage.get_mut(&section_name) {
             Some(section_items) => {
+                // NOTE: if item.value changes then there will be a duplicate key!
+                
                 if !section_items.contains(&item) {
                     section_items.push(item)
                 }
