@@ -2,6 +2,7 @@
 name = "neoconf"
 version = "0.2.0"
 edition = "2021"
+description = "Simple config parser."
 authors = ["abdalrzag eisa <bmjfdrh@gmail.com>"]
 readme = "README.md"
 homepage = "https://github.com/Senpai-10/neoconf"
