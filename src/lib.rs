@@ -2,7 +2,6 @@ mod parser;
 use parser::{Parser, StorageType, DEFAULT_SECTION, SectionItem};
 use std::collections::HashMap;
 
-
 pub struct Neoconf {
     file_path: String,
     storage: StorageType,
