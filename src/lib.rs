@@ -3,16 +3,20 @@ use parser::{Parser, StorageType, DEFAULT_SECTION, SectionItem};
 use std::collections::HashMap;
 
 pub struct Options {
-    pub auto_save: bool
+    pub auto_save: bool,
+    /// Parse config from a string not from a file
+    pub from_string: Option<String>
 }
 
 impl Default for Options {
     fn default() -> Self {
-        Self { auto_save: false }
+        Self { auto_save: false, from_string: None }
     }
 }
 
 pub struct Neoconf {
+    // TODO: move `file_path` to `Options` or something
+    // because if you provide a `from_string` option you don't need `file_path`
     file_path: String,
     options: Options,
     storage: StorageType,
@@ -28,8 +32,14 @@ impl Neoconf {
     }
 
     pub fn load(&mut self) {
-        let file_contents = self.get_file_contents();
-        let mut parser = Parser::new(self.file_path.to_string(), file_contents);
+        let config_string: String = {
+            match &self.options.from_string {
+                Some(x) => x.to_string(),
+                None => self.get_file_contents()
+            }
+        };
+
+        let mut parser = Parser::new(self.file_path.to_string(), config_string);
 
         self.storage = parser.parse();
     }
