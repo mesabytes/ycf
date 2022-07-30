@@ -4,7 +4,7 @@ use std::collections::HashMap;
 
 pub struct Options {
     pub auto_save: bool,
-    /// Parse config from a string not from a file
+    /// Parse config from a string not from a file (used for testing or something? idk)
     pub from_string: Option<String>
 }
 
