@@ -1,10 +1,7 @@
 use neoconf::{Neoconf, Options};
 
 fn main() {
-    let mut config = Neoconf::new("test.neoconf", Options { 
-        auto_save: true, 
-        from_string: None 
-    });
+    let mut config = Neoconf::new("test.neoconf", Options::default());
 
     config.load();
 
