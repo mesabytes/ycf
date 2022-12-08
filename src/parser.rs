@@ -3,7 +3,7 @@ use std::{collections::HashMap, process::exit};
 #[derive(PartialEq)]
 pub struct SectionItem {
     pub key: String,
-    pub value: String
+    pub value: String,
 }
 
 // type for parsed data in hashmap
@@ -15,7 +15,7 @@ const DELIMITER: &str = "=";
 pub struct Parser {
     file_path: String,
     file_contents: String,
-    current_section: String
+    current_section: String,
 }
 
 impl Parser {
@@ -23,7 +23,7 @@ impl Parser {
         Self {
             file_path,
             file_contents,
-            current_section: DEFAULT_SECTION.to_string()
+            current_section: DEFAULT_SECTION.to_string(),
         }
     }
 
@@ -32,10 +32,10 @@ impl Parser {
         let mut storage: StorageType = HashMap::new();
         let mut inside_section = false;
 
-        for (index , line) in self.file_contents.lines().enumerate() {
+        for (index, line) in self.file_contents.lines().enumerate() {
             let line = line.trim();
             let line_number = index + 1;
-            
+
             if line.starts_with(COMMENT_CHAR) || line.is_empty() {
                 continue;
             }
@@ -54,7 +54,7 @@ impl Parser {
 
             if line.contains(DELIMITER) {
                 let (mut key, mut value) = line.split_once("=").expect("Corrupt config file!");
-                
+
                 key = key.trim();
                 value = value.trim();
 
@@ -64,10 +64,13 @@ impl Parser {
                 }
 
                 if key.is_empty() {
-                    println!("[neoconf] Error: `no key found for value`, line {line_number} in '{}'", self.file_path);
+                    println!(
+                        "[neoconf] Error: `no key found for value`, line {line_number} in '{}'",
+                        self.file_path
+                    );
                     exit(1);
                 }
-                
+
                 if value.is_empty() {
                     println!("[neoconf] Error: `no value found for key '{key}'`, line {line_number} in '{}'", self.file_path);
                     exit(1);
@@ -75,20 +78,18 @@ impl Parser {
 
                 let item = SectionItem {
                     key: key.to_string(),
-                    value: value.to_string()
+                    value: value.to_string(),
                 };
 
                 match storage.get_mut(&self.current_section) {
-                    Some(section_items) => {
-                        section_items.push(item)
-                    }
+                    Some(section_items) => section_items.push(item),
                     None => {
                         storage.insert(self.current_section.to_owned(), vec![item]);
                     }
                 }
             }
         }
-        
+
         storage
     }
 }
@@ -96,14 +97,14 @@ impl Parser {
 fn get_new_section(line: &str) -> String {
     let new_line: Vec<&str> = line.split(" ").collect();
 
-    // index 0: "section" 
+    // index 0: "section"
     // index 1: section name
     // index 2: {
     let new_section = new_line[1];
-    
-    if new_section.is_empty() {
-        return DEFAULT_SECTION.to_string()
-    } 
 
-    return new_section.to_string()
+    if new_section.is_empty() {
+        return DEFAULT_SECTION.to_string();
+    }
+
+    return new_section.to_string();
 }

@@ -1,5 +1,5 @@
 mod parser;
-use parser::{Parser, StorageType, DEFAULT_SECTION, SectionItem};
+use parser::{Parser, SectionItem, StorageType, DEFAULT_SECTION};
 use std::collections::HashMap;
 
 pub struct Options {
@@ -10,15 +10,15 @@ pub struct Options {
 
     /// `Default configuration`
     /// used when config does not exists or no from string is provided
-    pub default: Option<String>
+    pub default: Option<String>,
 }
 
 impl Default for Options {
     fn default() -> Self {
-        Self { 
-            auto_save: false, 
+        Self {
+            auto_save: false,
             from_string: None,
-            default: None
+            default: None,
         }
     }
 }
@@ -33,10 +33,10 @@ pub struct Neoconf {
 
 impl Neoconf {
     pub fn new(file_path: &str, options: Options) -> Self {
-        Self { 
+        Self {
             file_path: file_path.to_string(),
             options: options,
-            storage: HashMap::new() 
+            storage: HashMap::new(),
         }
     }
 
@@ -44,7 +44,7 @@ impl Neoconf {
         let config_string: String = {
             match &self.options.from_string {
                 Some(x) => x.to_string(),
-                None => self.get_file_contents()
+                None => self.get_file_contents(),
             }
         };
 
@@ -60,12 +60,12 @@ impl Neoconf {
             Some(section_items) => {
                 for item in section_items.iter() {
                     if item.key == key {
-                        return Some(item.value.to_owned())
+                        return Some(item.value.to_owned());
                     }
                 }
 
                 Some(String::new())
-            },
+            }
             None => None,
         }
     }
@@ -75,13 +75,13 @@ impl Neoconf {
 
         let item = SectionItem {
             key: key.to_string(),
-            value: value.to_string()
+            value: value.to_string(),
         };
 
         match self.storage.get_mut(&section_name) {
             Some(section_items) => {
                 // NOTE: if item.value changes then there will be a duplicate key!
-                
+
                 if !section_items.contains(&item) {
                     section_items.push(item)
                 }
@@ -103,14 +103,17 @@ impl Neoconf {
 
         match self.storage.get_mut(&section_name) {
             Some(section_items) => {
-                match section_items.iter().position(|item| *item.key == key.to_string()) {
+                match section_items
+                    .iter()
+                    .position(|item| *item.key == key.to_string())
+                {
                     Some(index) => {
                         section_items.remove(index);
-                    },
+                    }
                     None => {}
                 }
-            },
-            None => {},
+            }
+            None => {}
         };
 
         if self.options.auto_save {
@@ -142,7 +145,7 @@ impl Neoconf {
                 for item in items.iter() {
                     contents.push_str(&format!("{} = {}\n", item.key, item.value));
                 }
-            },
+            }
             None => {}
         }
 
@@ -158,10 +161,10 @@ impl Neoconf {
                     for item in items.iter() {
                         contents.push_str(&format!("\t{} = {}\n", item.key, item.value));
                     }
-                },
+                }
                 None => {}
             }
-            
+
             contents.push_str(&format!("}}\n"));
         }
 
@@ -172,12 +175,8 @@ impl Neoconf {
 
 fn get_section_name(section: Option<&str>) -> String {
     match section {
-        Some(x) => {
-            return x.to_string()
-        },
-        None => {
-            return DEFAULT_SECTION.to_string()
-        }
+        Some(x) => return x.to_string(),
+        None => return DEFAULT_SECTION.to_string(),
     }
 }
 
