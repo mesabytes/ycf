@@ -1,7 +1,7 @@
 use neoconf::{Neoconf, Options};
 
 fn main() {
-    let mut config = Neoconf::new("test.neoconf", Options::default());
+    let mut config = Neoconf::load("test.neoconf", Options::default());
 
     config.load();
 
