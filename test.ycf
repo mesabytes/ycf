@@ -1,10 +1,10 @@
 name = senpai
 
-section testsection2 {
+@testsection2 {
 	host = localhost
 	port = 4433
 }
 
-section testsection1 {
+@testsection1 {
 	testkey = testvalue
 }
