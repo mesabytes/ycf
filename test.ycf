@@ -1,0 +1,10 @@
+name = senpai
+
+section testsection2 {
+	host = localhost
+	port = 4433
+}
+
+section testsection1 {
+	testkey = testvalue
+}
