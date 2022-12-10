@@ -1,5 +1,7 @@
 mod parser;
-use std::{collections::HashMap, hash::Hash};
+use std::collections::HashMap;
+
+use parser::parse;
 
 // pub struct Options {
 //     pub auto_save: bool,
@@ -33,13 +35,16 @@ impl Ycf {
             std::fs::write(&file, "").expect("Failed to write file");
         }
 
-        let contents = std::fs::read_to_string(&file).expect("Failed to read file");
+        let file_content = std::fs::read_to_string(&file).expect("Failed to read file");
+        let mut storage = HashMap::new();
 
-        println!("{:?}", contents);
+        parse(file, file_content, &mut storage);
+
+        println!("storage: {:#?}", storage);
 
         Self {
             file: file.to_string(),
-            storage: HashMap::new()
+            storage
         }
     }
 

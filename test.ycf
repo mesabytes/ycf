@@ -7,4 +7,9 @@ name = senpai
 
 @testsection1 {
 	testkey = testvalue
+
+    @user {
+        username = senpai-10
+        pass = 123
+    }
 }
