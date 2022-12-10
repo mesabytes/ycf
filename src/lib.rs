@@ -40,8 +40,6 @@ impl Ycf {
 
         parse(file, file_content, &mut storage);
 
-        println!("storage: {:#?}", storage);
-
         Self {
             file: file.to_string(),
             storage
