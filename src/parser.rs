@@ -26,7 +26,9 @@ pub fn parse(file: &str, input: String, storage: &mut HashMap<String, String>) {
                     let mut t = s[0].to_string();
 
                     // remove `SECTION_PREFIX` from section name
-                    t.remove(SECTION_PREFIX.len() - 1);
+                    for _ in 0..SECTION_PREFIX.len() {
+                        t.remove(0);
+                    }
 
                     t
                 }
