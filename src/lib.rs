@@ -46,12 +46,12 @@ impl Ycf {
         }
     }
 
-    pub fn get() {
-        unimplemented!()
+    pub fn get(&self, key: &str) -> Option<String> {
+        return self.storage.get(key).cloned()
     }
 
-    pub fn set() {
-        unimplemented!()
+    pub fn set(&mut self, key: String, value: String) -> Option<String> {
+        self.storage.insert(key, value)
     }
 }
 
