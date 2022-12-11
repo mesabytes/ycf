@@ -25,7 +25,9 @@ use parser::parse;
 // }
 
 pub struct Ycf {
-    storage: BTreeMap<String, String>
+    storage: BTreeMap<String, String>,
+    file: Option<String>,
+    auto_save: bool
 }
 
 impl Ycf {
@@ -40,7 +42,9 @@ impl Ycf {
         parse(file_content, &mut storage);
 
         Self {
-            storage
+            storage,
+            file: Some(file.into()),
+            auto_save: false
         }
     }
 
@@ -50,16 +54,47 @@ impl Ycf {
         parse(input_string, &mut storage);
 
         Self {
-            storage
+            storage,
+            file: None,
+            auto_save: false
         }
     }
+
+    // -------- SETTINGS
+
+    /// Turn on/off auto save
+    pub fn auto_save(&mut self, b: bool) {
+        self.auto_save = b;
+    }
+
+    // SETTINGS --------
 
     pub fn get(&self, key: &str) -> Option<String> {
         return self.storage.get(key).cloned()
     }
 
     pub fn set(&mut self, key: String, value: String) -> Option<String> {
-        self.storage.insert(key, value)
+        let item = self.storage.insert(key, value);
+
+        if self.auto_save {
+            self.save();
+        }
+
+        item
+    }
+
+    /// save
+    pub fn save(&self) {
+        match &self.file {
+            Some(file) => {
+                // TODO: Write self.storage back to disk
+
+                println!("file: {file}");
+            }
+            None => {
+                return;
+            }
+        }
     }
 }
 
