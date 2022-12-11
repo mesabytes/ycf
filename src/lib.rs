@@ -1,5 +1,5 @@
 mod parser;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use parser::parse;
 
@@ -26,7 +26,7 @@ use parser::parse;
 
 pub struct Ycf {
     file: String,
-    storage: HashMap<String, String>
+    storage: BTreeMap<String, String>
 }
 
 impl Ycf {
@@ -36,7 +36,7 @@ impl Ycf {
         }
 
         let file_content = std::fs::read_to_string(&file).expect("Failed to read file");
-        let mut storage = HashMap::new();
+        let mut storage = BTreeMap::new();
 
         parse(file_content, &mut storage);
 

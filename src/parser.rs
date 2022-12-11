@@ -1,11 +1,11 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 const SECTION_PREFIX: &str = "@";
 const SECTION_START: &str = "{";
 const SECTION_END: &str = "}";
 const KEY_VALUE_SEP: &str = "=";
 
-pub fn parse(input: String, storage: &mut HashMap<String, String>) {
+pub fn parse(input: String, storage: &mut BTreeMap<String, String>) {
     let mut section = String::new();
     let mut inside_section = false;
 
