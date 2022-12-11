@@ -38,7 +38,7 @@ impl Ycf {
         let file_content = std::fs::read_to_string(&file).expect("Failed to read file");
         let mut storage = HashMap::new();
 
-        parse(file, file_content, &mut storage);
+        parse(file_content, &mut storage);
 
         Self {
             file: file.to_string(),

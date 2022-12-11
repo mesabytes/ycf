@@ -1,8 +1,11 @@
 use std::collections::HashMap;
 
 const SECTION_PREFIX: &str = "@";
+const SECTION_START: &str = "{";
+const SECTION_END: &str = "}";
+const KEY_VALUE_SEP: &str = "=";
 
-pub fn parse(file: &str, input: String, storage: &mut HashMap<String, String>) {
+pub fn parse(input: String, storage: &mut HashMap<String, String>) {
     let mut section = String::new();
     let mut inside_section = false;
 
@@ -42,22 +45,21 @@ pub fn parse(file: &str, input: String, storage: &mut HashMap<String, String>) {
 
             assert!(
                 section.is_empty() == false,
-                "{} ({}): No section name is provided",
-                file,
+                "line {}: No section name is provided",
                 line_number
             );
         }
 
-        if line.starts_with("{") || line.ends_with("{") {
+        if line.starts_with(SECTION_START) || line.ends_with(SECTION_START) {
             inside_section = true;
         }
 
-        if line.starts_with("}") || line.ends_with("}") {
+        if line.starts_with(SECTION_END) || line.ends_with(SECTION_END) {
             inside_section = false;
         }
 
-        if line.contains("=") {
-            let (mut key, mut value) = line.split_once("=").expect("Corrupt config file!");
+        if line.contains(KEY_VALUE_SEP) {
+            let (mut key, mut value) = line.split_once(KEY_VALUE_SEP).expect("Corrupt config file!");
 
             key = key.trim();
             value = value.trim();
