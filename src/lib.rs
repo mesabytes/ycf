@@ -26,6 +26,7 @@ use parser::parse;
 
 pub struct Ycf {
     storage: BTreeMap<String, String>,
+    default_storage: BTreeMap<String, String>,
     file: Option<String>,
     auto_save: bool
 }
@@ -43,6 +44,7 @@ impl Ycf {
 
         Self {
             storage,
+            default_storage: BTreeMap::new(),
             file: Some(file.into()),
             auto_save: false
         }
@@ -55,6 +57,7 @@ impl Ycf {
 
         Self {
             storage,
+            default_storage: BTreeMap::new(),
             file: None,
             auto_save: false
         }
@@ -67,10 +70,19 @@ impl Ycf {
         self.auto_save = b;
     }
 
+    pub fn default_config(&mut self, input_string: String) {
+        parse(input_string, &mut self.default_storage);
+    }
+
     // SETTINGS --------
 
     pub fn get(&self, key: &str) -> Option<String> {
-        return self.storage.get(key).cloned()
+        match self.storage.get(key).cloned() {
+            Some(value) => Some(value),
+            None => {
+                self.default_storage.get(key).cloned()
+            }
+        }
     }
 
     pub fn set(&mut self, key: String, value: String) -> Option<String> {
