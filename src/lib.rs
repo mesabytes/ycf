@@ -44,6 +44,16 @@ impl Ycf {
         }
     }
 
+    pub fn load_from_string(input_string: String) -> Self {
+        let mut storage = BTreeMap::new();
+
+        parse(input_string, &mut storage);
+
+        Self {
+            storage
+        }
+    }
+
     pub fn get(&self, key: &str) -> Option<String> {
         return self.storage.get(key).cloned()
     }
