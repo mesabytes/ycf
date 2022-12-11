@@ -28,7 +28,7 @@ pub struct Ycf {
     storage: BTreeMap<String, String>,
     default_storage: BTreeMap<String, String>,
     file: Option<String>,
-    auto_save: bool
+    auto_save: bool,
 }
 
 impl Ycf {
@@ -46,7 +46,7 @@ impl Ycf {
             storage,
             default_storage: BTreeMap::new(),
             file: Some(file.into()),
-            auto_save: false
+            auto_save: false,
         }
     }
 
@@ -59,7 +59,7 @@ impl Ycf {
             storage,
             default_storage: BTreeMap::new(),
             file: None,
-            auto_save: false
+            auto_save: false,
         }
     }
 
@@ -79,9 +79,7 @@ impl Ycf {
     pub fn get(&self, key: &str) -> Option<String> {
         match self.storage.get(key).cloned() {
             Some(value) => Some(value),
-            None => {
-                self.default_storage.get(key).cloned()
-            }
+            None => self.default_storage.get(key).cloned(),
         }
     }
 
