@@ -25,7 +25,6 @@ use parser::parse;
 // }
 
 pub struct Ycf {
-    file: String,
     storage: BTreeMap<String, String>
 }
 
@@ -41,7 +40,6 @@ impl Ycf {
         parse(file_content, &mut storage);
 
         Self {
-            file: file.to_string(),
             storage
         }
     }
