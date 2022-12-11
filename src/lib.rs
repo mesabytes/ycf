@@ -93,6 +93,10 @@ impl Ycf {
         item
     }
 
+    pub fn remove(&mut self, key: String) {
+        unimplemented!()
+    }
+
     /// save
     pub fn save(&self) {
         match &self.file {
