@@ -27,14 +27,12 @@ impl Section {
 }
 
 const SECTION_PREFIX: &str = "@";
-const SECTION_START: &str = "{";
 const SECTION_END: &str = "}";
 const KEY_VALUE_SEP: &str = "=";
 
 pub fn parse(input: String) -> Section {
     let mut storage = Section::new();
     let mut sections: Vec<String> = Vec::new();
-    let mut inside_section = false;
 
     for (index, mut line) in input.lines().enumerate() {
         if line.is_empty() {
@@ -73,12 +71,7 @@ pub fn parse(input: String) -> Section {
             );
         }
 
-        if line.starts_with(SECTION_START) || line.ends_with(SECTION_START) {
-            inside_section = true;
-        }
-
         if line.starts_with(SECTION_END) || line.ends_with(SECTION_END) {
-            inside_section = false;
             sections.pop();
         }
 
