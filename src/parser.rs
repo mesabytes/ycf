@@ -33,7 +33,7 @@ const KEY_VALUE_SEP: &str = "=";
 
 pub fn parse(input: String) -> Section {
     let mut storage = Section::new();
-    let mut section: Vec<String> = Vec::new();
+    let mut sections: Vec<String> = Vec::new();
     let mut inside_section = false;
 
     for (index, mut line) in input.lines().enumerate() {
@@ -65,13 +65,13 @@ pub fn parse(input: String) -> Section {
             };
 
             if inside_section {
-                section.push(current_section);
+                sections.push(current_section);
             } else {
-                section.push(current_section);
+                sections.push(current_section);
             }
 
             assert!(
-                section.is_empty() == false,
+                sections.is_empty() == false,
                 "line {}: No section name is provided",
                 line_number
             );
@@ -83,7 +83,7 @@ pub fn parse(input: String) -> Section {
 
         if line.starts_with(SECTION_END) || line.ends_with(SECTION_END) {
             inside_section = false;
-            section.pop();
+            sections.pop();
         }
 
         if line.contains(KEY_VALUE_SEP) {
@@ -94,7 +94,7 @@ pub fn parse(input: String) -> Section {
             key = key.trim();
             value = value.trim();
 
-            if section.is_empty() {
+            if sections.is_empty() {
                 // if key is already in keys overwrite it with new value
                 // to prevent dublicated keys
                 match storage.keys.iter_mut().find(|p| *p.key == key.to_owned()) {
@@ -109,7 +109,7 @@ pub fn parse(input: String) -> Section {
                     }
                 }
             } else {
-                println!("key: {:?}\n\tsection: {:?}", key, section.join("."));
+                println!("key: {:?}\n\tsection: {:?}", key, sections.join("."));
             }
         }
     }
