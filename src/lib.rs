@@ -2,27 +2,6 @@ mod parser;
 use parser::parse;
 use std::collections::BTreeMap;
 
-// pub struct Options {
-//     pub auto_save: bool,
-
-//     /// Parse config from a string not from a file (used for testing or something? idk)
-//     pub from_string: Option<String>,
-
-//     /// `Default configuration`
-//     /// used when config does not exists or no from string is provided
-//     pub default: Option<String>,
-// }
-
-// impl Default for Options {
-//     fn default() -> Self {
-//         Self {
-//             auto_save: false,
-//             from_string: None,
-//             default: None,
-//         }
-//     }
-// }
-
 pub struct Ycf {
     storage: BTreeMap<String, String>,
     default_storage: BTreeMap<String, String>,
