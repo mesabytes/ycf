@@ -1,11 +1,43 @@
-use std::collections::BTreeMap;
+#[derive(Debug, Clone)]
+pub enum GrammarItem {
+    Section(String),
+}
+
+#[derive(Debug, Clone)]
+pub struct KeyValuePair {
+    key: String,
+    value: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct Section {
+    entry: GrammarItem,
+    keys: Vec<KeyValuePair>,
+    children: Vec<Section>,
+}
+
+// this is base64 of "root-section" the root of the file
+//
+// Just to make it harder to conflict with user specified sections
+const ROOT_SECTION: &str = "cm9vdC1zZWN0aW9uCg==";
+
+impl Section {
+    pub fn new() -> Self {
+        Self {
+            entry: GrammarItem::Section(ROOT_SECTION.into()),
+            keys: Vec::new(),
+            children: Vec::new(),
+        }
+    }
+}
 
 const SECTION_PREFIX: &str = "@";
 const SECTION_START: &str = "{";
 const SECTION_END: &str = "}";
 const KEY_VALUE_SEP: &str = "=";
 
-pub fn parse(input: String, storage: &mut BTreeMap<String, String>) {
+pub fn parse(input: String) -> Section {
+    let mut storage = Section::new();
     let mut section = String::new();
     let mut inside_section = false;
 
@@ -59,20 +91,33 @@ pub fn parse(input: String, storage: &mut BTreeMap<String, String>) {
         }
 
         if line.contains(KEY_VALUE_SEP) {
-            let (mut key, mut value) = line.split_once(KEY_VALUE_SEP).expect("Corrupt config file!");
+            let (mut key, mut value) = line
+                .split_once(KEY_VALUE_SEP)
+                .expect("Corrupt config file!");
 
             key = key.trim();
             value = value.trim();
 
-            let skey;
-
-            if !section.is_empty() {
-                skey = format!("{section}.{key}");
+            if section.is_empty() {
+                // if key is already in keys overwrite it with new value
+                // to prevent dublicated keys
+                match storage.keys.iter_mut().find(|p| *p.key == key.to_owned()) {
+                    Some(pair) => {
+                        pair.value = value.to_owned();
+                    }
+                    None => {
+                        storage.keys.push(KeyValuePair {
+                            key: key.into(),
+                            value: value.into(),
+                        });
+                    }
+                }
             } else {
-                skey = key.to_string();
+                println!("section: {}", section);
             }
-
-            storage.insert(skey, value.to_string());
         }
     }
+
+    println!("{:#?}", storage);
+    return storage;
 }

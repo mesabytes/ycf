@@ -1,10 +1,10 @@
 mod parser;
-use parser::parse;
+use parser::{parse, Section};
 use std::collections::BTreeMap;
 
 pub struct Ycf {
-    storage: BTreeMap<String, String>,
-    default_storage: BTreeMap<String, String>,
+    storage: parser::Section,
+    default_storage: parser::Section,
     file: Option<String>,
     auto_save: bool,
 }
@@ -16,26 +16,19 @@ impl Ycf {
         }
 
         let file_content = std::fs::read_to_string(&file).expect("Failed to read file");
-        let mut storage = BTreeMap::new();
-
-        parse(file_content, &mut storage);
 
         Self {
-            storage,
-            default_storage: BTreeMap::new(),
+            storage: parse(file_content),
+            default_storage: Section::new(),
             file: Some(file.into()),
             auto_save: false,
         }
     }
 
     pub fn load_from_string(input_string: String) -> Self {
-        let mut storage = BTreeMap::new();
-
-        parse(input_string, &mut storage);
-
         Self {
-            storage,
-            default_storage: BTreeMap::new(),
+            storage: parse(input_string),
+            default_storage: Section::new(),
             file: None,
             auto_save: false,
         }
@@ -49,26 +42,28 @@ impl Ycf {
     }
 
     pub fn default_config(&mut self, input_string: String) {
-        parse(input_string, &mut self.default_storage);
+        self.default_storage = parse(input_string);
     }
 
     // SETTINGS --------
 
     pub fn get(&self, key: &str) -> Option<String> {
-        match self.storage.get(key).cloned() {
-            Some(value) => Some(value),
-            None => self.default_storage.get(key).cloned(),
-        }
+        // match self.storage.get(key).cloned() {
+        //     Some(value) => Some(value),
+        //     None => self.default_storage.get(key).cloned(),
+        // }
+        unimplemented!()
     }
 
     pub fn set(&mut self, key: String, value: String) -> Option<String> {
-        let item = self.storage.insert(key, value);
+        // let item = self.storage.insert(key, value);
 
-        if self.auto_save {
-            self.save(None);
-        }
+        // if self.auto_save {
+        //     self.save(None);
+        // }
 
-        item
+        // item
+        unimplemented!()
     }
 
     pub fn remove(&mut self, key: String) {
