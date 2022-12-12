@@ -9,4 +9,6 @@ fn main() {
 
     println!("{:?}", username);
     println!("{:?}", config.get("hello").unwrap());
+
+    config.save(Some("output.ycf".into()));
 }

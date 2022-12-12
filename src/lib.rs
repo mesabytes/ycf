@@ -1,7 +1,6 @@
 mod parser;
-use std::collections::BTreeMap;
-
 use parser::parse;
+use std::collections::BTreeMap;
 
 // pub struct Options {
 //     pub auto_save: bool,
@@ -87,7 +86,7 @@ impl Ycf {
         let item = self.storage.insert(key, value);
 
         if self.auto_save {
-            self.save();
+            self.save(None);
         }
 
         item
@@ -98,13 +97,16 @@ impl Ycf {
     }
 
     /// save
-    pub fn save(&self) {
-        match &self.file {
-            Some(file) => {
-                // TODO: Write self.storage back to disk
-
-                println!("file: {file}");
+    pub fn save(&self, file: Option<String>) {
+        let save_file: Option<String> = {
+            match file {
+                Some(f) => Some(f),
+                None => self.file.clone(),
             }
+        };
+
+        match save_file {
+            Some(file) => {}
             None => {
                 return;
             }
