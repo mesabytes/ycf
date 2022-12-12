@@ -11,5 +11,17 @@ name = senpai
     @user {
         username = senpai-10
         pass = 123
+        @h1 {
+            k = v
+            k2 = v2
+            @h2 {
+             k = v
+             k2 = v2
+            }
+        }
+    }
+
+    @account {
+        id = 3303323
     }
 }

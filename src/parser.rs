@@ -67,7 +67,6 @@ pub fn parse(input: String) -> Section {
             if inside_section {
                 section.push(current_section);
             } else {
-                section.pop();
                 section.push(current_section);
             }
 
@@ -84,6 +83,7 @@ pub fn parse(input: String) -> Section {
 
         if line.starts_with(SECTION_END) || line.ends_with(SECTION_END) {
             inside_section = false;
+            section.pop();
         }
 
         if line.contains(KEY_VALUE_SEP) {
@@ -109,7 +109,7 @@ pub fn parse(input: String) -> Section {
                     }
                 }
             } else {
-                println!("section: {}", section.join("."));
+                println!("key: {:?}\n\tsection: {:?}", key, section.join("."));
             }
         }
     }
