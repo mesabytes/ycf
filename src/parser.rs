@@ -64,11 +64,7 @@ pub fn parse(input: String) -> Section {
                 }
             };
 
-            if inside_section {
-                sections.push(current_section);
-            } else {
-                sections.push(current_section);
-            }
+            sections.push(current_section);
 
             assert!(
                 sections.is_empty() == false,
