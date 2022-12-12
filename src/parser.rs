@@ -1,9 +1,4 @@
 #[derive(Debug, Clone)]
-pub enum GrammarItem {
-    Section(String),
-}
-
-#[derive(Debug, Clone)]
 pub struct KeyValuePair {
     key: String,
     value: String,
@@ -11,7 +6,7 @@ pub struct KeyValuePair {
 
 #[derive(Debug, Clone)]
 pub struct Section {
-    entry: GrammarItem,
+    name: String,
     keys: Vec<KeyValuePair>,
     children: Vec<Section>,
 }
@@ -24,7 +19,7 @@ const ROOT_SECTION: &str = "cm9vdC1zZWN0aW9uCg==";
 impl Section {
     pub fn new() -> Self {
         Self {
-            entry: GrammarItem::Section(ROOT_SECTION.into()),
+            name: ROOT_SECTION.into(),
             keys: Vec::new(),
             children: Vec::new(),
         }
@@ -38,7 +33,7 @@ const KEY_VALUE_SEP: &str = "=";
 
 pub fn parse(input: String) -> Section {
     let mut storage = Section::new();
-    let mut section = String::new();
+    let mut section: Vec<String> = Vec::new();
     let mut inside_section = false;
 
     for (index, mut line) in input.lines().enumerate() {
@@ -70,9 +65,10 @@ pub fn parse(input: String) -> Section {
             };
 
             if inside_section {
-                section = format!("{section}.{current_section}");
+                section.push(current_section);
             } else {
-                section = current_section
+                section.clear();
+                section.push(current_section);
             }
 
             assert!(
@@ -113,7 +109,7 @@ pub fn parse(input: String) -> Section {
                     }
                 }
             } else {
-                println!("section: {}", section);
+                println!("section: {}", section.join("."));
             }
         }
     }
