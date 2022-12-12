@@ -44,7 +44,6 @@ pub fn parse(input: String) -> Section {
         line = line.trim();
 
         if line.starts_with(SECTION_PREFIX) {
-            // FIX: When move than one section are inside a section section var gets cleared
             let s: Vec<&str> = line.split_whitespace().collect();
 
             let current_section = {
