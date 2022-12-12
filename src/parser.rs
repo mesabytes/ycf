@@ -67,7 +67,7 @@ pub fn parse(input: String) -> Section {
             if inside_section {
                 section.push(current_section);
             } else {
-                section.clear();
+                section.pop();
                 section.push(current_section);
             }
 
