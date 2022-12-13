@@ -87,7 +87,7 @@ pub fn parse(input: String) -> Node {
             } else {
                 let mut inside_of: Vec<String> = Vec::new();
 
-                for (index, section) in sections.clone().iter().enumerate() {
+                for section in sections.clone().iter() {
                     inside_of.push(section.to_owned());
 
                     let mut this_section = Node::new();
@@ -95,23 +95,17 @@ pub fn parse(input: String) -> Node {
                     this_section.name = section.to_owned();
                     push_kv_pair(&mut this_section.keys, key.to_owned(), value.to_owned());
 
-                    if index == 0 {
-                        push_child(&mut root_node.children, this_section);
-                    } else {
-                        match root_node
-                            .children
-                            .iter_mut()
-                            .position(|p| *p.name == this_section.name.to_owned())
-                        {
-                            Some(i) => {
-                                push_child(&mut root_node.children[i].children, this_section)
-                            }
-                            None => {
-                                push_child(&mut root_node.children, this_section.clone());
-                                let stchlen = root_node.children.len() - 1;
+                    match root_node
+                        .children
+                        .iter_mut()
+                        .position(|p| *p.name == this_section.name.to_owned())
+                    {
+                        Some(i) => push_child(&mut root_node.children[i].children, this_section),
+                        None => {
+                            push_child(&mut root_node.children, this_section.clone());
+                            let stchlen = root_node.children.len() - 1;
 
-                                push_child(&mut root_node.children[stchlen].children, this_section);
-                            }
+                            push_child(&mut root_node.children[stchlen].children, this_section);
                         }
                     }
 
