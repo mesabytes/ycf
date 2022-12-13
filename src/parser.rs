@@ -89,27 +89,16 @@ pub fn parse(input: String) -> Node {
 
                 for section in sections.clone().iter() {
                     inside_of.push(section.to_owned());
+                }
 
-                    let mut this_section = Node::new();
+                let last_node_name = inside_of.pop().unwrap();
 
-                    this_section.name = section.to_owned();
-                    push_kv_pair(&mut this_section.keys, key.to_owned(), value.to_owned());
+                for insec in inside_of.clone().iter() {
+                    let mut new_node = Node::new();
+                    new_node.name = last_node_name.to_owned();
+                    push_kv_pair(&mut new_node.keys, key.to_owned(), value.to_owned());
 
-                    match root_node
-                        .children
-                        .iter_mut()
-                        .position(|p| *p.name == this_section.name.to_owned())
-                    {
-                        Some(i) => push_child(&mut root_node.children[i].children, this_section),
-                        None => {
-                            push_child(&mut root_node.children, this_section.clone());
-                            let stchlen = root_node.children.len() - 1;
-
-                            push_child(&mut root_node.children[stchlen].children, this_section);
-                        }
-                    }
-
-                    println!("inside of: {:#?}", inside_of);
+                    println!("insec: {insec}");
                 }
             }
         }
