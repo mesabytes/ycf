@@ -97,7 +97,9 @@ pub fn parse(input: String) -> Section {
 
                     let mut target: Option<&mut Vec<Section>> = None;
 
-                    if index != 0 {
+                    if index == 0 {
+                        target = Some(&mut storage.children)
+                    } else {
                         match storage
                             .children
                             .iter_mut()
@@ -106,13 +108,11 @@ pub fn parse(input: String) -> Section {
                             Some(i) => target = Some(&mut storage.children[i].children),
                             None => {
                                 push_child(&mut storage.children, this_section.clone());
-                                let stchlen = storage.children.len()-1;
+                                let stchlen = storage.children.len() - 1;
 
                                 target = Some(&mut storage.children[stchlen].children)
                             }
                         }
-                    } else {
-                        target = Some(&mut storage.children)
                     }
 
                     push_child(target.unwrap(), this_section);
