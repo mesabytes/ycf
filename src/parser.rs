@@ -83,25 +83,70 @@ pub fn parse(input: String) -> Section {
             value = value.trim();
 
             if sections.is_empty() {
-                // if key is already in keys overwrite it with new value
-                // to prevent dublicated keys
-                match storage.keys.iter_mut().find(|p| *p.key == key.to_owned()) {
-                    Some(pair) => {
-                        pair.value = value.to_owned();
-                    }
-                    None => {
-                        storage.keys.push(KeyValuePair {
-                            key: key.into(),
-                            value: value.into(),
-                        });
-                    }
-                }
+                push_kv_pair(&mut storage.keys, key.to_owned(), value.to_owned());
             } else {
-                println!("key: {:?}\n\tsection: {:?}", key, sections.join("."));
+                let mut inside_of: Vec<String> = Vec::new();
+
+                for (index, section) in sections.clone().iter().enumerate() {
+                    inside_of.push(section.to_owned());
+
+                    let mut this_section = Section::new();
+
+                    this_section.name = section.to_owned();
+                    push_kv_pair(&mut this_section.keys, key.to_owned(), value.to_owned());
+
+                    let mut target: Option<&mut Vec<Section>> = None;
+
+                    if index != 0 {
+                        match storage
+                            .children
+                            .iter_mut()
+                            .position(|p| *p.name == this_section.name.to_owned())
+                        {
+                            Some(i) => target = Some(&mut storage.children[i].children),
+                            None => {
+                                push_child(&mut storage.children, this_section.clone());
+                                let stchlen = storage.children.len()-1;
+
+                                target = Some(&mut storage.children[stchlen].children)
+                            }
+                        }
+                    } else {
+                        target = Some(&mut storage.children)
+                    }
+
+                    push_child(target.unwrap(), this_section);
+                }
             }
         }
     }
 
     println!("{:#?}", storage);
     return storage;
+}
+
+fn push_kv_pair(target: &mut Vec<KeyValuePair>, k: String, v: String) {
+    match target.iter_mut().find(|p| *p.key == k.to_owned()) {
+        Some(pair) => {
+            pair.value = v.to_owned();
+        }
+        None => {
+            target.push(KeyValuePair {
+                key: k.into(),
+                value: v.into(),
+            });
+        }
+    }
+}
+
+fn push_child(target: &mut Vec<Section>, section: Section) {
+    match target
+        .iter_mut()
+        .find(|p| *p.name == section.name.to_owned())
+    {
+        Some(_) => {}
+        None => {
+            target.push(section);
+        }
+    }
 }
