@@ -5,10 +5,10 @@ pub struct KeyValuePair {
 }
 
 #[derive(Debug, Clone)]
-pub struct Section {
+pub struct Node {
     name: String,
     keys: Vec<KeyValuePair>,
-    children: Vec<Section>,
+    children: Vec<Node>,
 }
 
 // this is base64 of "root-section" the root of the file
@@ -16,7 +16,7 @@ pub struct Section {
 // Just to make it harder to conflict with user specified sections
 const ROOT_SECTION: &str = "cm9vdC1zZWN0aW9uCg==";
 
-impl Section {
+impl Node {
     pub fn new() -> Self {
         Self {
             name: ROOT_SECTION.into(),
@@ -30,8 +30,8 @@ const SECTION_PREFIX: &str = "@";
 const SECTION_END: &str = "}";
 const KEY_VALUE_SEP: &str = "=";
 
-pub fn parse(input: String) -> Section {
-    let mut storage = Section::new();
+pub fn parse(input: String) -> Node {
+    let mut root_node = Node::new();
     let mut sections: Vec<String> = Vec::new();
 
     for (index, mut line) in input.lines().enumerate() {
@@ -83,34 +83,34 @@ pub fn parse(input: String) -> Section {
             value = value.trim();
 
             if sections.is_empty() {
-                push_kv_pair(&mut storage.keys, key.to_owned(), value.to_owned());
+                push_kv_pair(&mut root_node.keys, key.to_owned(), value.to_owned());
             } else {
                 let mut inside_of: Vec<String> = Vec::new();
 
                 for (index, section) in sections.clone().iter().enumerate() {
                     inside_of.push(section.to_owned());
 
-                    let mut this_section = Section::new();
+                    let mut this_section = Node::new();
 
                     this_section.name = section.to_owned();
                     push_kv_pair(&mut this_section.keys, key.to_owned(), value.to_owned());
 
-                    let mut target: Option<&mut Vec<Section>> = None;
+                    let mut target: Option<&mut Vec<Node>> = None;
 
                     if index == 0 {
-                        target = Some(&mut storage.children)
+                        target = Some(&mut root_node.children)
                     } else {
-                        match storage
+                        match root_node
                             .children
                             .iter_mut()
                             .position(|p| *p.name == this_section.name.to_owned())
                         {
-                            Some(i) => target = Some(&mut storage.children[i].children),
+                            Some(i) => target = Some(&mut root_node.children[i].children),
                             None => {
-                                push_child(&mut storage.children, this_section.clone());
-                                let stchlen = storage.children.len() - 1;
+                                push_child(&mut root_node.children, this_section.clone());
+                                let stchlen = root_node.children.len() - 1;
 
-                                target = Some(&mut storage.children[stchlen].children)
+                                target = Some(&mut root_node.children[stchlen].children)
                             }
                         }
                     }
@@ -121,8 +121,8 @@ pub fn parse(input: String) -> Section {
         }
     }
 
-    println!("{:#?}", storage);
-    return storage;
+    println!("{:#?}", root_node);
+    return root_node;
 }
 
 fn push_kv_pair(target: &mut Vec<KeyValuePair>, k: String, v: String) {
@@ -139,14 +139,14 @@ fn push_kv_pair(target: &mut Vec<KeyValuePair>, k: String, v: String) {
     }
 }
 
-fn push_child(target: &mut Vec<Section>, section: Section) {
+fn push_child(target: &mut Vec<Node>, node: Node) {
     match target
         .iter_mut()
-        .find(|p| *p.name == section.name.to_owned())
+        .find(|p| *p.name == node.name.to_owned())
     {
         Some(_) => {}
         None => {
-            target.push(section);
+            target.push(node);
         }
     }
 }
