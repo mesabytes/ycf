@@ -95,27 +95,27 @@ pub fn parse(input: String) -> Node {
                     this_section.name = section.to_owned();
                     push_kv_pair(&mut this_section.keys, key.to_owned(), value.to_owned());
 
-                    let mut target: Option<&mut Vec<Node>> = None;
-
                     if index == 0 {
-                        target = Some(&mut root_node.children)
+                        push_child(&mut root_node.children, this_section);
                     } else {
                         match root_node
                             .children
                             .iter_mut()
                             .position(|p| *p.name == this_section.name.to_owned())
                         {
-                            Some(i) => target = Some(&mut root_node.children[i].children),
+                            Some(i) => {
+                                push_child(&mut root_node.children[i].children, this_section)
+                            }
                             None => {
                                 push_child(&mut root_node.children, this_section.clone());
                                 let stchlen = root_node.children.len() - 1;
 
-                                target = Some(&mut root_node.children[stchlen].children)
+                                push_child(&mut root_node.children[stchlen].children, this_section);
                             }
                         }
                     }
 
-                    push_child(target.unwrap(), this_section);
+                    println!("inside of: {:#?}", inside_of);
                 }
             }
         }
@@ -140,10 +140,7 @@ fn push_kv_pair(target: &mut Vec<KeyValuePair>, k: String, v: String) {
 }
 
 fn push_child(target: &mut Vec<Node>, node: Node) {
-    match target
-        .iter_mut()
-        .find(|p| *p.name == node.name.to_owned())
-    {
+    match target.iter_mut().find(|p| *p.name == node.name.to_owned()) {
         Some(_) => {}
         None => {
             target.push(node);
