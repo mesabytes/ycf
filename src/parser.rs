@@ -1,6 +1,7 @@
 #[derive(Debug, Clone)]
 pub struct Node {
     name: String,
+    comments: Vec<String>,
     keys: Vec<KeyValuePair>,
     children: Vec<Node>,
 }
@@ -9,6 +10,7 @@ impl Node {
     pub fn new(name: String) -> Self {
         Self {
             name,
+            comments: Vec::new(),
             keys: Vec::new(),
             children: Vec::new(),
         }
@@ -19,6 +21,7 @@ impl Node {
 pub struct KeyValuePair {
     key: String,
     value: String,
+    comments: Vec<String>,
 }
 
 // this is base64 of "root-section" the root of the file
@@ -32,6 +35,7 @@ const KEY_VALUE_SEP: &str = "=";
 const COMMENT_PREFIX: &str = ";;";
 
 pub fn parse(input: String) -> Node {
+    // Note: Find a way to add comments to root node
     let mut root_node = Node::new(ROOT_SECTION.into());
     let mut sections: Vec<String> = Vec::new();
     let mut comments: Vec<String> = Vec::new();
@@ -45,7 +49,10 @@ pub fn parse(input: String) -> Node {
         }
 
         if line.starts_with(COMMENT_PREFIX) {
-            comments.push(remove_first_chars(&mut line.to_string(), COMMENT_PREFIX.len()));
+            comments.push(remove_first_chars(
+                &mut line.to_string(),
+                COMMENT_PREFIX.len(),
+            ));
             continue;
         }
 
@@ -82,12 +89,19 @@ pub fn parse(input: String) -> Node {
             value = value.trim();
 
             if sections.is_empty() {
-                push_kv_pair(&mut root_node.keys, key.to_owned(), value.to_owned());
+                let kv_pair = KeyValuePair {
+                    key: key.into(),
+                    value: value.into(),
+                    comments: comments.clone(),
+                };
+
+                push_kv_pair(&mut root_node.keys, kv_pair);
             } else {
                 let parent: &mut Node = &mut root_node;
                 let kv_pair = KeyValuePair {
                     key: key.into(),
                     value: value.into(),
+                    comments: comments.clone(),
                 };
 
                 create_nodes(kv_pair, &mut sections.clone(), parent);
@@ -116,20 +130,17 @@ fn create_nodes(kv_pair: KeyValuePair, sections: &mut Vec<String>, parent: &mut 
         create_nodes(kv_pair, sections, &mut parent.children[tnode_index]);
     } else {
         // add kv pair to last node
-        push_kv_pair(&mut parent.keys, kv_pair.key, kv_pair.value);
+        push_kv_pair(&mut parent.keys, kv_pair);
     }
 }
 
-fn push_kv_pair(target: &mut Vec<KeyValuePair>, k: String, v: String) {
-    match target.iter_mut().find(|p| *p.key == k.to_owned()) {
+fn push_kv_pair(target: &mut Vec<KeyValuePair>, kv_pair: KeyValuePair) {
+    match target.iter_mut().find(|p| *p.key == kv_pair.key.to_owned()) {
         Some(pair) => {
-            pair.value = v.to_owned();
+            pair.value = kv_pair.value.to_owned();
         }
         None => {
-            target.push(KeyValuePair {
-                key: k.into(),
-                value: v.into(),
-            });
+            target.push(kv_pair);
         }
     }
 }
