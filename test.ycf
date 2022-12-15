@@ -1,10 +1,5 @@
 name = senpai
 
-@testsection2 {
-	host = localhost
-	port = 4433
-}
-
 @testsection1 {
 	testkey = testvalue
 
@@ -25,3 +20,9 @@ name = senpai
         id = 3303323
     }
 }
+
+@testsection2 {
+	host = localhost
+	port = 4433
+}
+
