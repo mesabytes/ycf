@@ -1,20 +1,9 @@
 #[derive(Debug, Clone)]
-pub struct KeyValuePair {
-    key: String,
-    value: String,
-}
-
-#[derive(Debug, Clone)]
 pub struct Node {
     name: String,
     keys: Vec<KeyValuePair>,
     children: Vec<Node>,
 }
-
-// this is base64 of "root-section" the root of the file
-//
-// Just to make it harder to conflict with user specified sections
-pub const ROOT_SECTION: &str = "cm9vdC1zZWN0aW9uCg==";
 
 impl Node {
     pub fn new(name: String) -> Self {
@@ -25,6 +14,17 @@ impl Node {
         }
     }
 }
+
+#[derive(Debug, Clone)]
+pub struct KeyValuePair {
+    key: String,
+    value: String,
+}
+
+// this is base64 of "root-section" the root of the file
+//
+// Just to make it harder to conflict with user specified sections
+pub const ROOT_SECTION: &str = "cm9vdC1zZWN0aW9uCg==";
 
 const SECTION_PREFIX: &str = "@";
 const SECTION_END: &str = "}";
