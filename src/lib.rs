@@ -1,6 +1,5 @@
 mod parser;
-use parser::{parse, Node};
-use std::collections::BTreeMap;
+use parser::{parse, Node, ROOT_SECTION};
 
 pub struct Ycf {
     storage: parser::Node,
@@ -19,7 +18,7 @@ impl Ycf {
 
         Self {
             storage: parse(file_content),
-            default_storage: Node::new(),
+            default_storage: Node::new(ROOT_SECTION.into()),
             file: Some(file.into()),
             auto_save: false,
         }
@@ -28,7 +27,7 @@ impl Ycf {
     pub fn load_from_string(input_string: String) -> Self {
         Self {
             storage: parse(input_string),
-            default_storage: Node::new(),
+            default_storage: Node::new(ROOT_SECTION.into()),
             file: None,
             auto_save: false,
         }

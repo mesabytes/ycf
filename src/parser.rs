@@ -14,12 +14,12 @@ pub struct Node {
 // this is base64 of "root-section" the root of the file
 //
 // Just to make it harder to conflict with user specified sections
-const ROOT_SECTION: &str = "cm9vdC1zZWN0aW9uCg==";
+pub const ROOT_SECTION: &str = "cm9vdC1zZWN0aW9uCg==";
 
 impl Node {
-    pub fn new() -> Self {
+    pub fn new(name: String) -> Self {
         Self {
-            name: ROOT_SECTION.into(),
+            name,
             keys: Vec::new(),
             children: Vec::new(),
         }
@@ -31,7 +31,7 @@ const SECTION_END: &str = "}";
 const KEY_VALUE_SEP: &str = "=";
 
 pub fn parse(input: String) -> Node {
-    let mut root_node = Node::new();
+    let mut root_node = Node::new(ROOT_SECTION.into());
     let mut sections: Vec<String> = Vec::new();
 
     for (index, mut line) in input.lines().enumerate() {
@@ -85,27 +85,38 @@ pub fn parse(input: String) -> Node {
             if sections.is_empty() {
                 push_kv_pair(&mut root_node.keys, key.to_owned(), value.to_owned());
             } else {
-                let mut inside_of: Vec<String> = Vec::new();
+                let parent: &mut Node = &mut root_node;
+                let kv_pair = KeyValuePair {
+                    key: key.into(),
+                    value: value.into(),
+                };
 
-                for section in sections.clone().iter() {
-                    inside_of.push(section.to_owned());
-                }
-
-                let last_node_name = inside_of.pop().unwrap();
-
-                for insec in inside_of.clone().iter() {
-                    let mut new_node = Node::new();
-                    new_node.name = last_node_name.to_owned();
-                    push_kv_pair(&mut new_node.keys, key.to_owned(), value.to_owned());
-
-                    println!("insec: {insec}");
-                }
+                create_nodes(kv_pair, &mut sections.clone(), parent);
             }
         }
     }
 
     println!("{:#?}", root_node);
     return root_node;
+}
+
+fn create_nodes(kv_pair: KeyValuePair, sections: &mut Vec<String>, parent: &mut Node) {
+    let section_name = sections.get(0);
+
+    if section_name.is_some() {
+        let node = Node::new(section_name.unwrap().to_owned());
+
+        push_child(&mut parent.children, node);
+
+        sections.remove(0);
+
+        let tnode_index = parent.children.len() - 1;
+
+        create_nodes(kv_pair, sections, &mut parent.children[tnode_index]);
+    } else {
+        // add kv pair to last node
+        push_kv_pair(&mut parent.keys, kv_pair.key, kv_pair.value);
+    }
 }
 
 fn push_kv_pair(target: &mut Vec<KeyValuePair>, k: String, v: String) {
