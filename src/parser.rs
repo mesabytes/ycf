@@ -1,9 +1,11 @@
+pub type NodeList = Vec<Node>;
+
 #[derive(Debug, Clone)]
 pub struct Node {
     name: String,
     comments: Vec<String>,
     keys: Vec<KeyValuePair>,
-    children: Vec<Node>,
+    children: NodeList,
 }
 
 impl Node {
@@ -145,7 +147,7 @@ fn push_kv_pair(target: &mut Vec<KeyValuePair>, kv_pair: KeyValuePair) {
     }
 }
 
-fn push_child(target: &mut Vec<Node>, node: Node) {
+fn push_child(target: &mut NodeList, node: Node) {
     match target.iter_mut().find(|p| *p.name == node.name.to_owned()) {
         Some(_) => {}
         None => {
