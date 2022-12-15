@@ -1,5 +1,5 @@
 ;; some name
-;; more comments
+;; one more comment
 ;; hi hello
 name = senpai
 
@@ -7,14 +7,20 @@ name = senpai
 	testkey = testvalue
 
     @user {
+        ;; username key
+        ;; new comment for username key!
         username = senpai-10
+
+        ;; userpass key
         pass = 123
+
         @h1 {
             k = v
             k2 = v2
+
             @h2 {
-             k = v
-             k2 = v2
+                k = v
+                k2 = v2
             }
         }
     }
@@ -27,6 +33,6 @@ name = senpai
 
 @testsection2 {
 	host = localhost
-	port = 4433
+    port = 4433
 }
 
