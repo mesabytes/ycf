@@ -29,19 +29,25 @@ pub const ROOT_SECTION: &str = "cm9vdC1zZWN0aW9uCg==";
 const SECTION_PREFIX: &str = "@";
 const SECTION_END: &str = "}";
 const KEY_VALUE_SEP: &str = "=";
+const COMMENT_PREFIX: &str = ";;";
 
 pub fn parse(input: String) -> Node {
     let mut root_node = Node::new(ROOT_SECTION.into());
     let mut sections: Vec<String> = Vec::new();
+    let mut comments: Vec<String> = Vec::new();
 
     for (index, mut line) in input.lines().enumerate() {
+        let line_number = index + 1;
+        line = line.trim();
+
         if line.is_empty() {
             continue;
         }
 
-        let line_number = index + 1;
-
-        line = line.trim();
+        if line.starts_with(COMMENT_PREFIX) {
+            comments.push(remove_first_chars(&mut line.to_string(), COMMENT_PREFIX.len()));
+            continue;
+        }
 
         if line.starts_with(SECTION_PREFIX) {
             let s: Vec<&str> = line.split_whitespace().collect();
@@ -50,14 +56,7 @@ pub fn parse(input: String) -> Node {
                 if s[0] == SECTION_PREFIX {
                     s[1].to_string()
                 } else {
-                    let mut t = s[0].to_string();
-
-                    // remove `SECTION_PREFIX` from section name
-                    for _ in 0..SECTION_PREFIX.len() {
-                        t.remove(0);
-                    }
-
-                    t
+                    remove_first_chars(&mut s[0].to_string(), SECTION_PREFIX.len())
                 }
             };
 
@@ -94,6 +93,8 @@ pub fn parse(input: String) -> Node {
                 create_nodes(kv_pair, &mut sections.clone(), parent);
             }
         }
+
+        comments.clear();
     }
 
     println!("{:#?}", root_node);
@@ -140,4 +141,12 @@ fn push_child(target: &mut Vec<Node>, node: Node) {
             target.push(node);
         }
     }
+}
+
+fn remove_first_chars(s: &mut String, n: usize) -> String {
+    for _ in 0..n {
+        s.remove(0);
+    }
+
+    s.trim_start().to_string()
 }

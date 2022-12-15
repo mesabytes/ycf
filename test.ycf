@@ -1,3 +1,6 @@
+;; some name
+;; more comments
+;; hi hello
 name = senpai
 
 @testsection1 {
@@ -16,6 +19,7 @@ name = senpai
         }
     }
 
+    ;; comments for account section
     @account {
         id = 3303323
     }
