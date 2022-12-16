@@ -17,6 +17,30 @@ impl Node {
             children: Vec::new(),
         }
     }
+
+    pub fn add_child(&mut self, new_child: Node) {
+        match self
+            .children
+            .iter_mut()
+            .find(|p| *p.name == new_child.name.to_owned())
+        {
+            Some(_) => {}
+            None => {
+                self.children.push(new_child);
+            }
+        }
+    }
+
+    pub fn add_kv_pair(&mut self, kv_pair: KeyValuePair) {
+        match self.keys.iter_mut().find(|p| *p.key == kv_pair.key.to_owned()) {
+            Some(pair) => {
+                pair.value = kv_pair.value.to_owned();
+            }
+            None => {
+                self.keys.push(kv_pair);
+            }
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -97,7 +121,7 @@ pub fn parse(input: String) -> Node {
                     comments: comments.clone(),
                 };
 
-                push_kv_pair(&mut root_node.keys, kv_pair);
+                root_node.add_kv_pair(kv_pair);
             } else {
                 let parent: &mut Node = &mut root_node;
                 let kv_pair = KeyValuePair {
@@ -123,7 +147,7 @@ fn create_nodes(kv_pair: KeyValuePair, sections: &mut Vec<String>, parent: &mut 
     if section_name.is_some() {
         let node = Node::new(section_name.unwrap().to_owned());
 
-        push_child(&mut parent.children, node);
+        parent.add_child(node);
 
         sections.remove(0);
 
@@ -132,27 +156,7 @@ fn create_nodes(kv_pair: KeyValuePair, sections: &mut Vec<String>, parent: &mut 
         create_nodes(kv_pair, sections, &mut parent.children[tnode_index]);
     } else {
         // add kv pair to last node
-        push_kv_pair(&mut parent.keys, kv_pair);
-    }
-}
-
-fn push_kv_pair(target: &mut Vec<KeyValuePair>, kv_pair: KeyValuePair) {
-    match target.iter_mut().find(|p| *p.key == kv_pair.key.to_owned()) {
-        Some(pair) => {
-            pair.value = kv_pair.value.to_owned();
-        }
-        None => {
-            target.push(kv_pair);
-        }
-    }
-}
-
-fn push_child(target: &mut NodeList, node: Node) {
-    match target.iter_mut().find(|p| *p.name == node.name.to_owned()) {
-        Some(_) => {}
-        None => {
-            target.push(node);
-        }
+        parent.add_kv_pair(kv_pair)
     }
 }
 
