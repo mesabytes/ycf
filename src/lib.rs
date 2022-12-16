@@ -1,6 +1,6 @@
 mod parser;
 
-use parser::{convert_node_to_string, parse, Node, ROOT_SECTION};
+use parser::{parse, Node, ROOT_SECTION};
 
 pub struct Ycf {
     root_node: Node,
@@ -48,21 +48,10 @@ impl Ycf {
     // SETTINGS --------
 
     pub fn get(&self, key: &str) -> Option<String> {
-        // match self.storage.get(key).cloned() {
-        //     Some(value) => Some(value),
-        //     None => self.default_storage.get(key).cloned(),
-        // }
         unimplemented!()
     }
 
     pub fn set(&mut self, key: String, value: String) -> Option<String> {
-        // let item = self.storage.insert(key, value);
-
-        // if self.auto_save {
-        //     self.save(None);
-        // }
-
-        // item
         unimplemented!()
     }
 
