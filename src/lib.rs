@@ -1,6 +1,8 @@
 mod parser;
+mod constants;
 
-use parser::{parse, Node, ROOT_SECTION};
+use constants::ROOT_SECTION;
+use parser::{parse, Node};
 
 pub struct Ycf {
     root_node: Node,
