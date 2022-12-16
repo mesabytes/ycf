@@ -1,9 +1,10 @@
 mod parser;
+
 use parser::{parse, Node, ROOT_SECTION};
 
 pub struct Ycf {
-    storage: parser::Node,
-    default_storage: parser::Node,
+    root_node: Node,
+    default_root_node: Node,
     file: Option<String>,
     auto_save: bool,
 }
@@ -17,8 +18,8 @@ impl Ycf {
         let file_content = std::fs::read_to_string(&file).expect("Failed to read file");
 
         Self {
-            storage: parse(file_content),
-            default_storage: Node::new(ROOT_SECTION.into()),
+            root_node: parse(file_content),
+            default_root_node: Node::new(ROOT_SECTION.into()),
             file: Some(file.into()),
             auto_save: false,
         }
@@ -26,8 +27,8 @@ impl Ycf {
 
     pub fn load_from_string(input_string: String) -> Self {
         Self {
-            storage: parse(input_string),
-            default_storage: Node::new(ROOT_SECTION.into()),
+            root_node: parse(input_string),
+            default_root_node: Node::new(ROOT_SECTION.into()),
             file: None,
             auto_save: false,
         }
@@ -41,7 +42,7 @@ impl Ycf {
     }
 
     pub fn default_config(&mut self, input_string: String) {
-        self.default_storage = parse(input_string);
+        self.default_root_node = parse(input_string);
     }
 
     // SETTINGS --------
