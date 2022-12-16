@@ -32,7 +32,11 @@ impl Node {
     }
 
     pub fn add_kv_pair(&mut self, kv_pair: KeyValuePair) {
-        match self.keys.iter_mut().find(|p| *p.key == kv_pair.key.to_owned()) {
+        match self
+            .keys
+            .iter_mut()
+            .find(|p| *p.key == kv_pair.key.to_owned())
+        {
             Some(pair) => {
                 pair.value = kv_pair.value.to_owned();
             }
@@ -40,6 +44,19 @@ impl Node {
                 self.keys.push(kv_pair);
             }
         }
+    }
+
+    /// Convert node and it's children to string
+    pub fn convert_to_string(&self) -> String {
+        unimplemented!();
+
+        let result = String::new();
+
+        // TODO: Push root node comments
+        // TODO: Push root node keys and there comments
+        // TODO: Do the same recursively for root node children
+
+        result
     }
 }
 

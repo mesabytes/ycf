@@ -1,6 +1,6 @@
 mod parser;
 
-use parser::{parse, Node, ROOT_SECTION};
+use parser::{convert_node_to_string, parse, Node, ROOT_SECTION};
 
 pub struct Ycf {
     root_node: Node,
@@ -80,7 +80,11 @@ impl Ycf {
         };
 
         match save_file {
-            Some(file) => {}
+            Some(file) => {
+                let text = self.root_node.convert_to_string();
+
+                std::fs::write(&file, text).expect("Failed to save config");
+            }
             None => {
                 return;
             }
