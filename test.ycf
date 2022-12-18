@@ -1,0 +1,43 @@
+;; some name
+;; one more comment
+;; hi hello
+name = senpai
+
+;; testsection1 section comment
+@testsection1 {
+	testkey = testvalue
+
+    ;; user section comment
+    @user {
+        ;; username key
+        ;; new comment for username key!
+        username = senpai-10
+
+        ;; userpass key
+        pass = 123
+
+        ;; h1 section comment
+        @h1 {
+            k = v
+            k2 = v2
+
+            ;; h2 section comment
+            @h2 {
+                k = v
+                k2 = v2
+            }
+        }
+    }
+
+    ;; account section comment
+    @account {
+        id = 3303323
+    }
+}
+
+;; testsection2 section comment
+@testsection2 {
+	host = localhost
+    port = 4433
+}
+

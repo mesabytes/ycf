@@ -1,109 +1,178 @@
-use std::{collections::HashMap, process::exit};
+use crate::constants::*;
 
-#[derive(PartialEq)]
-pub struct SectionItem {
-    pub key: String,
-    pub value: String
+pub type NodeList = Vec<Node>;
+
+#[derive(Debug, Clone)]
+pub struct Node {
+    name: String,
+    comments: Vec<String>,
+    keys: Vec<KeyValuePair>,
+    children: NodeList,
 }
 
-// type for parsed data in hashmap
-pub type StorageType = HashMap<String, Vec<SectionItem>>;
-pub const DEFAULT_SECTION: &str = "main";
-const COMMENT_CHAR: &str = ";";
-const DELIMITER: &str = "=";
-
-pub struct Parser {
-    file_path: String,
-    file_contents: String,
-    current_section: String
-}
-
-impl Parser {
-    pub fn new(file_path: String, file_contents: String) -> Self {
+impl Node {
+    pub fn new(name: String) -> Self {
         Self {
-            file_path,
-            file_contents,
-            current_section: DEFAULT_SECTION.to_string()
+            name,
+            comments: Vec::new(),
+            keys: Vec::new(),
+            children: Vec::new(),
         }
     }
 
-    pub fn parse(&mut self) -> StorageType {
-        // temp storage for parsed data
-        let mut storage: StorageType = HashMap::new();
-        let mut inside_section = false;
-
-        for (index , line) in self.file_contents.lines().enumerate() {
-            let line = line.trim();
-            let line_number = index + 1;
-            
-            if line.starts_with(COMMENT_CHAR) || line.is_empty() {
-                continue;
+    pub fn add_child(&mut self, new_child: Node) {
+        match self
+            .children
+            .iter_mut()
+            .find(|p| *p.name == new_child.name.to_owned())
+        {
+            Some(_) => {}
+            None => {
+                self.children.push(new_child);
             }
+        }
+    }
 
-            if line.starts_with("section") && line.ends_with("{") {
-                self.current_section = get_new_section(line);
-
-                inside_section = true;
+    pub fn add_kv_pair(&mut self, kv_pair: KeyValuePair) {
+        match self
+            .keys
+            .iter_mut()
+            .find(|p| *p.key == kv_pair.key.to_owned())
+        {
+            Some(pair) => {
+                pair.value = kv_pair.value.to_owned();
             }
-
-            if inside_section == true && line.starts_with("}") || line.ends_with("}") {
-                self.current_section = DEFAULT_SECTION.to_string();
-
-                inside_section = false;
+            None => {
+                self.keys.push(kv_pair);
             }
+        }
+    }
 
-            if line.contains(DELIMITER) {
-                let (mut key, mut value) = line.split_once("=").expect("Corrupt config file!");
-                
-                key = key.trim();
-                value = value.trim();
+    /// Convert node and it's children to string
+    pub fn convert_to_string(&self) -> String {
+        unimplemented!();
 
-                if key.is_empty() && value.is_empty() {
-                    println!("[neoconf] ParserError: `no key or value found`, line {line_number} in '{}'", self.file_path);
-                    exit(1);
+        let result = String::new();
+
+        // TODO: Push root node comments
+        // TODO: Push root node keys and there comments
+        // TODO: Do the same recursively for root node children
+
+        result
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct KeyValuePair {
+    key: String,
+    value: String,
+    comments: Vec<String>,
+}
+
+pub fn parse(input: String) -> Node {
+    // Note: Find a way to add comments to root node
+    let mut root_node = Node::new(ROOT_SECTION.into());
+    let mut sections: Vec<String> = Vec::new();
+    let mut comments: Vec<String> = Vec::new();
+
+    for (index, mut line) in input.lines().enumerate() {
+        let line_number = index + 1;
+        line = line.trim();
+
+        if line.is_empty() {
+            continue;
+        }
+
+        if line.starts_with(COMMENT_PREFIX) {
+            comments.push(remove_first_chars(
+                &mut line.to_string(),
+                COMMENT_PREFIX.len(),
+            ));
+            continue;
+        }
+
+        if line.starts_with(SECTION_PREFIX) {
+            let s: Vec<&str> = line.split_whitespace().collect();
+
+            let current_section = {
+                if s[0] == SECTION_PREFIX {
+                    s[1].to_string()
+                } else {
+                    remove_first_chars(&mut s[0].to_string(), SECTION_PREFIX.len())
                 }
+            };
 
-                if key.is_empty() {
-                    println!("[neoconf] Error: `no key found for value`, line {line_number} in '{}'", self.file_path);
-                    exit(1);
-                }
-                
-                if value.is_empty() {
-                    println!("[neoconf] Error: `no value found for key '{key}'`, line {line_number} in '{}'", self.file_path);
-                    exit(1);
-                }
+            sections.push(current_section);
 
-                let item = SectionItem {
-                    key: key.to_string(),
-                    value: value.to_string()
+            assert!(
+                sections.is_empty() == false,
+                "line {}: No section name is provided",
+                line_number
+            );
+        }
+
+        if line.starts_with(SECTION_END) || line.ends_with(SECTION_END) {
+            sections.pop();
+        }
+
+        if line.contains(KEY_VALUE_SEP) {
+            let (mut key, mut value) = line
+                .split_once(KEY_VALUE_SEP)
+                .expect("Corrupt config file!");
+
+            key = key.trim();
+            value = value.trim();
+
+            if sections.is_empty() {
+                let kv_pair = KeyValuePair {
+                    key: key.into(),
+                    value: value.into(),
+                    comments: comments.clone(),
                 };
 
-                match storage.get_mut(&self.current_section) {
-                    Some(section_items) => {
-                        section_items.push(item)
-                    }
-                    None => {
-                        storage.insert(self.current_section.to_owned(), vec![item]);
-                    }
-                }
+                root_node.add_kv_pair(kv_pair);
+            } else {
+                let parent: &mut Node = &mut root_node;
+                let kv_pair = KeyValuePair {
+                    key: key.into(),
+                    value: value.into(),
+                    comments: comments.clone(),
+                };
+
+                create_nodes(kv_pair, &mut sections.clone(), parent);
             }
         }
-        
-        storage
+
+        comments.clear();
+    }
+
+    println!("{:#?}", root_node);
+    return root_node;
+}
+
+fn create_nodes(kv_pair: KeyValuePair, sections: &mut Vec<String>, parent: &mut Node) {
+    let section_name = sections.get(0);
+
+    if section_name.is_some() {
+        let node = Node::new(section_name.unwrap().to_owned());
+
+        parent.add_child(node);
+
+        sections.remove(0);
+
+        let tnode_index = parent.children.len() - 1;
+
+        create_nodes(kv_pair, sections, &mut parent.children[tnode_index]);
+    } else {
+        // add kv pair to last node
+        parent.add_kv_pair(kv_pair)
     }
 }
 
-fn get_new_section(line: &str) -> String {
-    let new_line: Vec<&str> = line.split(" ").collect();
+fn remove_first_chars(s: &mut String, n: usize) -> String {
+    for _ in 0..n {
+        s.remove(0);
+    }
 
-    // index 0: "section" 
-    // index 1: section name
-    // index 2: {
-    let new_section = new_line[1];
-    
-    if new_section.is_empty() {
-        return DEFAULT_SECTION.to_string()
-    } 
-
-    return new_section.to_string()
+    s.trim_start().to_string()
 }

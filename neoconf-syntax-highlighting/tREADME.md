@@ -1,1 +1,0 @@
-# Syntax Highlighting vscode extension

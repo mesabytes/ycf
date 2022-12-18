@@ -1,1 +1,3 @@
-# neoconf
+# ycf
+
+Yet another configuration file

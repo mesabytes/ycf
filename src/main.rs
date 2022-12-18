@@ -1,17 +1,14 @@
-use neoconf::{Neoconf, Options};
+use ycf::Ycf;
 
 fn main() {
-    let mut config = Neoconf::new("test.neoconf", Options::default());
+    let mut config = Ycf::load_from_file("test.ycf");
 
-    config.load();
+    // let username = config.get("testsection1.user.username");
 
-    println!("testkey: {}", config.get(Some("testsection1"), "testkey").unwrap_or_default());
-    
-    println!("host: {}", config.get(Some("testsection2"), "host").unwrap_or_default());
+    // config.set("hello".into(), "world".into());
 
-    println!("port: {}", config.get(Some("testsection2"), "port").unwrap_or_default());
+    // println!("{:?}", username);
+    // println!("{:?}", config.get("hello").unwrap());
 
-    println!("name: {}", config.get(None, "name").unwrap_or_default()); 
-
-    // config.save().unwrap();
+    // config.save(Some("output.ycf".into()));
 }
