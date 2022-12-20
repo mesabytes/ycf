@@ -1,6 +1,6 @@
 use std::process::exit;
 
-use crate::constants::PREPROCS_LIST;
+use crate::constants::{PREPROCS_LIST, PREPROC_PREFIX};
 
 pub fn preprocessor(file: Option<String>, input: String) -> String {
     let mut new_input = String::new();
@@ -8,7 +8,7 @@ pub fn preprocessor(file: Option<String>, input: String) -> String {
     for (index, line) in input.lines().enumerate() {
         let mut line = line.trim().to_string();
 
-        if line.starts_with("#") {
+        if line.starts_with(PREPROC_PREFIX) {
             line.remove(0);
 
             let tokens: Vec<&str> = line.split_whitespace().collect();
