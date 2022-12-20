@@ -17,25 +17,19 @@ pub fn preprocessor(file: Option<String>, input: String) -> String {
             if PREPROCS_LIST.contains(&preprocessor) {
                 match preprocessor {
                     "import" => {
-                        match file {
-                            Some(ref base_config_file) => {
-                                let file_to_import = match tokens.get(1) {
-                                    Some(f) => f,
-                                    None => {
-                                        eprintln!(
-                                            "[ycf] in {base_config_file} line {line_number}: no import path provided!",
-                                            line_number = index + 1
-                                        );
-                                        exit(1);
-                                    }
-                                };
-
-                                // TODO: check if file_to_import exists if not throw an error
-                            }
-                            None => {
-                                continue;
-                            }
+                        let config_file: &String = match file {
+                            Some(ref f) => f,
+                            None => continue,
                         };
+
+                        let file_to_import = tokens.get(1).unwrap_or_else(|| {
+                            eprintln!("[ycf] Error: import path is missing!",);
+                            eprintln!("{line_number} | {line}", line_number = index + 1);
+
+                            exit(1);
+                        });
+
+                        // TODO: check if file_to_import exists if not throw an error
                     }
                     _ => {}
                 }
