@@ -1,4 +1,6 @@
-use crate::constants::*;
+use std::process::exit;
+
+use crate::{constants::*, preprocessor::preprocessor};
 
 pub type NodeList = Vec<Node>;
 
@@ -69,13 +71,15 @@ pub struct KeyValuePair {
     comments: Vec<String>,
 }
 
-pub fn parse(input: String) -> Node {
+pub fn parse(file: Option<String>, input: String) -> Node {
     // Note: Find a way to add comments to root node
     let mut root_node = Node::new(ROOT_SECTION.into());
     let mut sections: Vec<String> = Vec::new();
     let mut comments: Vec<String> = Vec::new();
 
-    for (index, mut line) in input.lines().enumerate() {
+    let processed_input = preprocessor(file, input);
+
+    for (index, mut line) in processed_input.lines().enumerate() {
         let line_number = index + 1;
         line = line.trim();
 
