@@ -48,6 +48,16 @@ impl Ycf {
         self.default_root_node = parse(self.file.clone(), input_string);
     }
 
+    /// reparse config file
+    /// **Note: only works when loading from a file**
+    pub fn reload(&mut self) {
+        if let Some(f) = self.file.clone() {
+            let file_content = std::fs::read_to_string(&f).expect("Failed to read file");
+
+            self.root_node = parse(Some(f), file_content);
+        }
+    }
+
     // SETTINGS --------
 
     pub fn get(&self, key: &str) -> Option<String> {
