@@ -37,6 +37,16 @@ impl Ycf {
         }
     }
 
+    /// reparse config file
+    /// **Note: only works when loading from a file**
+    pub fn reload(&mut self) {
+        if let Some(f) = self.file.clone() {
+            let file_content = std::fs::read_to_string(&f).expect("Failed to read file");
+
+            self.root_node = parse(Some(f), file_content);
+        }
+    }
+
     // -------- SETTINGS
 
     /// Turn on/off auto save
@@ -46,16 +56,6 @@ impl Ycf {
 
     pub fn default_config(&mut self, input_string: String) {
         self.default_root_node = parse(self.file.clone(), input_string);
-    }
-
-    /// reparse config file
-    /// **Note: only works when loading from a file**
-    pub fn reload(&mut self) {
-        if let Some(f) = self.file.clone() {
-            let file_content = std::fs::read_to_string(&f).expect("Failed to read file");
-
-            self.root_node = parse(Some(f), file_content);
-        }
     }
 
     // SETTINGS --------
