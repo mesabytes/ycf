@@ -1,12 +1,12 @@
 [package]
-name = "ycf"
+name = "neoconf"
 version = "0.2.0"
 edition = "2021"
 description = "Yet another configuration file"
 authors = ["abdalrzag eisa <bmjfdrh@gmail.com>"]
 readme = "README.md"
-homepage = "https://github.com/Senpai-10/ycf"
-repository = "https://github.com/Senpai-10/ycf"
+homepage = "https://github.com/Senpai-10/neoconf"
+repository = "https://github.com/Senpai-10/neoconf"
 license-file = "LICENSE"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
