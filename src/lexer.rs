@@ -42,14 +42,6 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    // fn skip_whitespace(&mut self) {
-    //     if let Some(ch) = self.ch {
-    //         if ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r' {
-    //             self.to_next_char()
-    //         }
-    //     }
-    // }
-
     fn get_token(&mut self, ch: char) -> Option<Token> {
         match ch {
             '=' => {
