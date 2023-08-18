@@ -12,8 +12,8 @@ use crate::lexer::{Lexer, Token};
 const INPUT: &str = r#"
 # @SECTION_NAME
 # KEY = VALUE;
-username = mark;
-password = pass;
+username = mark
+password = pass
 "#;
 
 #[test]
