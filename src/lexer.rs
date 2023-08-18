@@ -2,24 +2,15 @@ use crate::tokens::Token;
 use std::iter::Peekable;
 use std::str::Chars;
 
+#[derive(Default)]
 struct State {
     inside_string: bool,
     inside_section: bool,
     reading_value: bool,
 }
 
-impl Default for State {
-    fn default() -> Self {
-        Self {
-            reading_value: false,
-            inside_section: false,
-            inside_string: false,
-        }
-    }
-}
-
 fn is_allowd_word(ch: char) -> bool {
-    'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_' || '0' <= ch && ch <= '9'
+    ch.is_ascii_lowercase() || ch.is_uppercase() || ch.is_ascii_digit() || ch == '_'
 }
 
 pub struct Lexer<'a> {
