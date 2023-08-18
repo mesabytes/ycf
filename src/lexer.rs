@@ -18,8 +18,8 @@ impl Default for State {
     }
 }
 
-fn is_letter(ch: char) -> bool {
-    'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+fn is_allowd_word(ch: char) -> bool {
+    'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_' || '0' <= ch && ch <= '9'
 }
 
 pub struct Lexer<'a> {
@@ -51,7 +51,7 @@ impl<'a> Lexer<'a> {
                 let mut section_name = String::new();
 
                 while let Some(peek) = self.input.peek() {
-                    if !is_letter(*peek) {
+                    if !is_allowd_word(*peek) {
                         break;
                     }
 
@@ -79,7 +79,7 @@ impl<'a> Lexer<'a> {
                 let mut ident = String::from(ch);
 
                 while let Some(peek) = self.input.peek() {
-                    if !is_letter(*peek) {
+                    if !is_allowd_word(*peek) {
                         break;
                     }
                     ident.push(*peek);
