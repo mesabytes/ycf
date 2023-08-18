@@ -20,8 +20,6 @@ fn tokenize() {
 
     let tokens = lexer.tokenize();
 
-    println!("Tokens: {:?}", tokens);
-
     assert_eq!(
         tokens,
         vec![

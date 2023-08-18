@@ -104,7 +104,6 @@ impl<'a> Lexer<'a> {
                 tokens.push(token)
             }
         }
-        println!("{:?}", tokens);
 
         tokens
     }
