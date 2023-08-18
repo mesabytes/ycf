@@ -1,0 +1,14 @@
+# ./.tmuxinator.yml
+
+name: ycf
+root: .
+
+windows:
+    - nvim:
+          - clear
+          - nvim .
+    - test:
+          - clear
+    - git:
+          - clear
+          - gs
