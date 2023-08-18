@@ -1,2 +1,6 @@
-username=mark
-password="123456"
+# @SECTION_NAME
+@main {
+    # KEY = VALUE
+    username = mark
+    password = pass
+}

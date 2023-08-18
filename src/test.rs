@@ -1,19 +1,12 @@
 use crate::lexer::{Lexer, Token};
 
-// const INPUT: &str = r#"
-// # @SECTION_NAME
-// @main {
-//     # KEY = VALUE;
-//     username = mark;
-//     password = 123456;
-// }
-// "#;
-
 const INPUT: &str = r#"
-# @SECTION_NAME
-# KEY = VALUE;
-username = mark
-password = pass
+# Section comment
+@main {
+    # key comment
+    username = mark;
+    password = pass;
+}
 "#;
 
 #[test]
@@ -22,17 +15,22 @@ fn tokenize() {
 
     let tokens = lexer.tokenize();
 
+    println!("Tokens: {:?}", tokens);
+
     assert_eq!(
         tokens,
         vec![
-            Token::Comment(" @SECTION_NAME".into()),
-            Token::Comment(" KEY = VALUE;".into()),
+            Token::Comment(" Section comment".into()),
+            Token::Section("main".into()),
+            Token::LParen,
+            Token::Comment(" key comment".into()),
             Token::Key("username".into()),
             Token::Equals,
             Token::Value("mark".into()),
             Token::Key("password".into()),
             Token::Equals,
             Token::Value("pass".into()),
+            Token::RParen,
         ]
     );
 }

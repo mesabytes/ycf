@@ -3,10 +3,13 @@ use std::str::Chars;
 
 #[derive(Debug, PartialEq)]
 pub enum Token {
+    Section(String),
     Identifier(String),
     Key(String),
     Value(String),
     Comment(String),
+    LParen,
+    RParen,
     Equals,
 }
 
@@ -52,6 +55,22 @@ impl<'a> Lexer<'a> {
             ';' | '\n' => {
                 self.state.reading_value = false;
                 None
+            }
+            '{' => Some(Token::LParen),
+            '}' => Some(Token::RParen),
+            '@' => {
+                let mut section_name = String::new();
+
+                while let Some(peek) = self.input.peek() {
+                    if !is_letter(*peek) {
+                        break;
+                    }
+
+                    section_name.push(*peek);
+                    self.input.next();
+                }
+
+                Some(Token::Section(section_name))
             }
             '#' => {
                 let mut comment = String::new();
