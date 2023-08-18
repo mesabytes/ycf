@@ -1,17 +1,6 @@
+use crate::tokens::Token;
 use std::iter::Peekable;
 use std::str::Chars;
-
-#[derive(Debug, PartialEq)]
-pub enum Token {
-    Section(String),
-    Identifier(String),
-    Key(String),
-    Value(String),
-    Comment(String),
-    LParen,
-    RParen,
-    Equals,
-}
 
 struct State {
     inside_string: bool,

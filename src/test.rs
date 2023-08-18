@@ -1,4 +1,5 @@
-use crate::lexer::{Lexer, Token};
+use crate::lexer::Lexer;
+use crate::tokens::Token;
 
 const INPUT: &str = r#"
 # Section comment
@@ -6,6 +7,10 @@ const INPUT: &str = r#"
     # key comment
     username = mark;
     password = pass;
+
+    @host_info {
+        host = localhost
+    }
 }
 "#;
 
@@ -30,6 +35,12 @@ fn tokenize() {
             Token::Key("password".into()),
             Token::Equals,
             Token::Value("pass".into()),
+            Token::Section("host_info".into()),
+            Token::LParen,
+            Token::Key("host".into()),
+            Token::Equals,
+            Token::Value("localhost".into()),
+            Token::RParen,
             Token::RParen,
         ]
     );
