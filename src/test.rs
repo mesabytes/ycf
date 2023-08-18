@@ -1,4 +1,5 @@
 use crate::lexer::Lexer;
+use crate::parser::Parser;
 use crate::tokens::Token;
 
 const INPUT: &str = r#"
@@ -42,4 +43,15 @@ fn lexer() {
             Token::RParen,
         ]
     );
+}
+
+#[test]
+fn parser() {
+    let mut lexer = Lexer::new(INPUT);
+
+    let tokens = lexer.tokenize();
+
+    let mut parser = Parser::new(tokens);
+
+    parser.parse()
 }
