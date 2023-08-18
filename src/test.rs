@@ -15,7 +15,7 @@ const INPUT: &str = r#"
 "#;
 
 #[test]
-fn tokenize() {
+fn lexer() {
     let mut lexer = Lexer::new(INPUT);
 
     let tokens = lexer.tokenize();
