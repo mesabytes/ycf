@@ -1,10 +1,10 @@
 #[derive(Debug, PartialEq)]
 pub enum Token {
-    Section(String),
-    Key(String),
-    Value(String),
     Comment(String),
+    Section(String),
     LParen,
     RParen,
+    Key(String),
     Equals,
+    Value(String),
 }
