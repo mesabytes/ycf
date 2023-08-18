@@ -4,8 +4,6 @@ use std::str::Chars;
 
 #[derive(Default)]
 struct State {
-    inside_string: bool,
-    inside_section: bool,
     reading_value: bool,
 }
 
