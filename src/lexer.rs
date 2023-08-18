@@ -6,6 +6,7 @@ pub enum Token {
     Identifier(String),
     Key(String),
     Value(String),
+    Comment(String),
     Equals,
 }
 
@@ -52,7 +53,21 @@ impl<'a> Lexer<'a> {
                 self.state.reading_value = false;
                 None
             }
-            _ => {
+            '#' => {
+                let mut comment = String::new();
+
+                while let Some(peek) = self.input.peek() {
+                    if *peek == '\n' {
+                        break;
+                    }
+
+                    comment.push(*peek);
+                    self.input.next();
+                }
+
+                Some(Token::Comment(comment))
+            }
+            'a'..='z' | 'A'..='Z' => {
                 let mut ident = String::from(ch);
 
                 while let Some(peek) = self.input.peek() {
@@ -69,6 +84,7 @@ impl<'a> Lexer<'a> {
                     Some(Token::Key(ident))
                 }
             }
+            _ => None,
         }
     }
 
