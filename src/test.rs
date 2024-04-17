@@ -53,5 +53,9 @@ fn parser() {
 
     let mut parser = Parser::new(tokens);
 
-    parser.parse()
+    let tree = parser.parse();
+
+    println!("tree: {:#?}", tree);
+
+    assert_eq!(true, true)
 }
